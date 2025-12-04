@@ -125,6 +125,7 @@ export class ChatWebsocketService {
 
     this.socket.onmessage = (event) => {
       try {
+        console.log('[ChatService] Mensaje WS raw:', event.data);
         const data = JSON.parse(event.data);
         if (data.type === 'message') {
           const mensaje: MensajeWS = {
@@ -135,6 +136,7 @@ export class ChatWebsocketService {
             fecha: data.fecha,
           };
           
+          console.log('[ChatService] Pasando mensaje a ChatService:', mensaje);
           // Pasar al ChatService para que actualice sus observables
           this.chatService.recibirMensajeEnTiempoReal({
             id: data.id || 0,
@@ -146,6 +148,8 @@ export class ChatWebsocketService {
           });
           
           this.messageSubject.next(mensaje);
+        } else {
+          console.log('[ChatService] Mensaje WS ignorado (tipo distinto de "message"):', data.type);
         }
       } catch (e) {
         console.error('[ChatService] Error parseando mensaje:', e);
