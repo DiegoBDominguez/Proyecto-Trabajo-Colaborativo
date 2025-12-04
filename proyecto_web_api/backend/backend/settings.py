@@ -89,10 +89,15 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# CSRF
+CSRF_TRUSTED_ORIGINS = [
+    'https://diegobd.pythonanywhere.com',
+]
+
 # CORS (Angular)
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
-    'https://proyecto-trabajo-colaborativo.vercel.app',
+    'https://proyecto-trabajo-colaborativo-ikw8.vercel.app',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
