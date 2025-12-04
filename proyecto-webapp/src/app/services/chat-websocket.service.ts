@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { ChatService } from './chat.service';
+import { TicketMessageService } from './ticket-message.service';
 import { environment } from 'src/environments/environment';
 
 export interface MensajeWS {
@@ -23,7 +24,7 @@ export class ChatWebsocketService {
   public messages$ = this.messageSubject.asObservable();
   public isConnected$ = this.connectionStatus.asObservable();
 
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, private ticketMessageService: TicketMessageService) {}
 
   // Conectar al WebSocket para un ticket específico
   connect(ticketId: number, token: string) {
@@ -57,6 +58,24 @@ export class ChatWebsocketService {
       try {
         const data = JSON.parse(event.data);
         if (data.type === 'message') {
+          const msg = {
+            id: data.id || 0,
+            ticket: this.currentTicketId,
+            usuario: data.usuario,
+            texto: data.mensaje,
+            esAgente: data.esAgente ?? data.es_agente ?? false,
+            fecha: data.fecha,
+            attachments: data.attachments || data.archivos || []
+          };
+
+          // Informar al servicio de mensajes de ticket para actualizar UI
+          try {
+            this.ticketMessageService.recibirMensajeWS(msg);
+          } catch (e) {
+            console.warn('[Chat] Error pasando mensaje al TicketMessageService', e);
+          }
+
+          // Emitir mensaje genérico también
           this.messageSubject.next({
             texto: data.mensaje,
             usuario: data.usuario,
