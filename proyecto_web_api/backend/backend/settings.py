@@ -92,14 +92,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# CORS (Angular local + Vercel + PythonAnywhere)
+# CORS (Angular)
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
-    'http://127.0.0.1:4200',
-    'https://proyecto-trabajo-colaborativo-ikw8.vercel.app',
-    'https://diegobd.pythonanywhere.com',
+    'https://proyecto-trabajo-colaborativo-pa9no73fd.vercel.app',
 ]
-CORS_ALLOW_CREDENTIALS = True
 
 # Usuario personalizado
 AUTH_USER_MODEL = 'cuentas.CustomUser'
