@@ -26,7 +26,7 @@ function asArray<T>(data: T[] | Page<T>): T[] {
 @Injectable({ providedIn: 'root' })
 export class TicketService {
   // usar base sin slash final y construir rutas explícitas
-  private base = `${environment.url_api}/tickets`;
+  private base = `${environment.apiUrl}/tickets`;
 
   private ticketsSubject = new BehaviorSubject<Ticket[]>([]);
   private loaded = false;

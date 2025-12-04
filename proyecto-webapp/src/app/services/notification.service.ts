@@ -14,7 +14,7 @@ export class NotificationService {
   private unreadCount$ = new BehaviorSubject<number>(0);
   private currentUserId: number | null = null;
   private currentUserRole: 'admin' | 'agente' | 'usuario' | null = null;
-  private apiUrl = `${environment.url_api}/notifications`;
+  private apiUrl = `${environment.apiUrl}/notifications`;
   private pollInterval: any; // para auto-polling de notificaciones
 
   constructor(

@@ -44,7 +44,7 @@ export class NotificationWsService {
 
     // Construir la URL de WS a partir de la configuración del backend (en dev el API puede correr en otro puerto)
     try {
-      const apiUrl = environment.url_api; // e.g. http://127.0.0.1:8000/api/cuentas
+      const apiUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas
       const u = new URL(apiUrl);
       const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
       const host = u.host; // incluye puerto

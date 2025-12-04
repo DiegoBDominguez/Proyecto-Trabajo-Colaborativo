@@ -15,26 +15,26 @@ export class AdminStatsService {
 
   // Average resolution time in hours (example)
   getAvgResolutionTime(): Observable<any> {
-    return this.http.get<any>(`${environment.url_api}/stats/tickets/avg_resolution_time/`, this.authHeaders());
+    return this.http.get<any>(`${environment.apiUrl}/stats/tickets/avg_resolution_time/`, this.authHeaders());
   }
 
   // Counts of open vs closed tickets
   getOpenClosedCounts(): Observable<any> {
-    return this.http.get<any>(`${environment.url_api}/stats/tickets/status_counts/`, this.authHeaders());
+    return this.http.get<any>(`${environment.apiUrl}/stats/tickets/status_counts/`, this.authHeaders());
   }
 
   // Tickets grouped by category
   getTicketsByCategory(): Observable<any> {
-    return this.http.get<any>(`${environment.url_api}/stats/tickets/by_category/`, this.authHeaders());
+    return this.http.get<any>(`${environment.apiUrl}/stats/tickets/by_category/`, this.authHeaders());
   }
 
   // Trend data for charts (e.g., last 30 days)
   getTicketsTrend(): Observable<any> {
-    return this.http.get<any>(`${environment.url_api}/stats/tickets/trend/`, this.authHeaders());
+    return this.http.get<any>(`${environment.apiUrl}/stats/tickets/trend/`, this.authHeaders());
   }
 
   // Combined all stats in a single call
   getAllStats(): Observable<any> {
-    return this.http.get<any>(`${environment.url_api}/stats/tickets/all/`, this.authHeaders());
+    return this.http.get<any>(`${environment.apiUrl}/stats/tickets/all/`, this.authHeaders());
   }
 }

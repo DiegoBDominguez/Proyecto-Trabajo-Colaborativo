@@ -61,7 +61,7 @@ export class FacadeService {
       username: username,
       password: password
     }
-    return this.http.post<any>(`${environment.url_api}/token/`,data, httpOptions);
+    return this.http.post<any>(`${environment.apiUrl}/token/`,data, httpOptions);
   }
 
   //Cerrar sesión
@@ -69,7 +69,7 @@ export class FacadeService {
     var headers: any;
     var token = this.getSessionToken();
     headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
-    return this.http.get<any>(`${environment.url_api}/logout/`, {headers: headers});
+    return this.http.get<any>(`${environment.apiUrl}/logout/`, {headers: headers});
   }
 
 
@@ -78,7 +78,7 @@ export class FacadeService {
     var headers: any;
     var token = this.getSessionToken();
     headers = new HttpHeaders({'Authorization': 'Bearer '+token});
-    return this.http.get<any>(`${environment.url_api}/me/`,{headers:headers});
+    return this.http.get<any>(`${environment.apiUrl}/me/`,{headers:headers});
   }
 
   getCookieValue(key:string){
@@ -86,7 +86,7 @@ export class FacadeService {
   }
 
   saveCookieValue(key:string, value:string){
-    var secure = environment.url_api.indexOf("https")!=-1;
+    var secure = environment.apiUrl.indexOf("https")!=-1;
     this.cookieService.set(key, value, undefined, undefined, undefined, secure, secure?"None":"Lax");
   }
 
@@ -100,7 +100,7 @@ export class FacadeService {
 
 
   saveUserData(user_data:any){
-    var secure = environment.url_api.indexOf("https")!=-1;
+    var secure = environment.apiUrl.indexOf("https")!=-1;
     if(user_data.rol == "administrador"){
       this.cookieService.set(user_id_cookie_name, user_data.id, undefined, undefined, undefined, secure, secure?"None":"Lax");
       this.cookieService.set(user_email_cookie_name, user_data.email, undefined, undefined, undefined, secure, secure?"None":"Lax");

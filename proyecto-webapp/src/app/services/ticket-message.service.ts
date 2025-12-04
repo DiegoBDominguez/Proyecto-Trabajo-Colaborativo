@@ -30,7 +30,7 @@ export interface MensajeTicket {
   providedIn: 'root'
 })
 export class TicketMessageService {
-  private apiUrl = `${environment.url_api}/tickets`;
+  private apiUrl = `${environment.apiUrl}/tickets`;
 
   // Observable para mensajes del ticket actual
   private mensajesSubject = new BehaviorSubject<MensajeTicket[]>([]);
@@ -122,8 +122,8 @@ export class TicketMessageService {
     // Detectar attachments en distintas formas que el backend podría enviar
     const rawAttachments = raw.attachments || raw.archivos || raw.files || [];
 
-    // Base URL del backend (por ejemplo: http://127.0.0.1:8000)
-    const backendBase = (environment.url_api || '').replace(/\/api.*$/i, '');
+    // Base URL del backend (por ejemplo: http://127.0.0.1:8001)
+    const backendBase = (environment.apiUrl || '').replace(/\/api.*$/i, '');
 
     const attachments = (rawAttachments || []).map((a: any) => {
       let nombre = a.nombre || a.name || a.filename || a.file_name || a.archivo_nombre || '';

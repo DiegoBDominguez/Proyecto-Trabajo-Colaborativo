@@ -90,14 +90,14 @@ export class AgentesService {
 
 public registrarAgente(data: any): Observable<any> {
     return this.http.post<any>(
-        `${environment.url_api}/register/agente/`, 
+        `${environment.apiUrl}/register/agente/`, 
         data, 
         httpOptions
     );
 }
   // Obtener un solo agente por ID
   public getAgenteByID(idUser: number) {
-    return this.http.get<any>(`${environment.url_api}/agentes/?id=${idUser}`, httpOptions);
+    return this.http.get<any>(`${environment.apiUrl}/agentes/?id=${idUser}`, httpOptions);
   }
 
 }

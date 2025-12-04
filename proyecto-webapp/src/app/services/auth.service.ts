@@ -23,7 +23,7 @@ export type LoginResponse = {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = environment.url_api; // p.ej. http://127.0.0.1:8000/api/cuentas
+  private baseUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas
 
   constructor(private http: HttpClient, private router: Router) {}
 

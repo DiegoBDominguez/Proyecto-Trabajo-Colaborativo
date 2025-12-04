@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'cámbiame-en-.env'
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'diegobd.pythonanywhere.com', 'proyecto-trabajo-colaborativo-ikw8.vercel.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -92,9 +92,12 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# CORS (Angular)
+# CORS (Angular local + Vercel + PythonAnywhere)
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
+    'http://127.0.0.1:4200',
+    'https://proyecto-trabajo-colaborativo-ikw8.vercel.app',
+    'https://diegobd.pythonanywhere.com',
 ]
 CORS_ALLOW_CREDENTIALS = True
 

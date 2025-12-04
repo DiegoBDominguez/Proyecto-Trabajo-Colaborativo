@@ -91,7 +91,7 @@ public validarDatos(data: any, editar: boolean, rol: string) {
   // Servicios HTTP
   public registrar(data: any, rol: string): Observable<any> {
   const nuevoUsuario = { ...data, username: data.email, rol: rol };
-  return this.http.post<any>(`${environment.url_api}/register/usuario/`, nuevoUsuario, httpOptions).pipe(
+  return this.http.post<any>(`${environment.apiUrl}/register/usuario/`, nuevoUsuario, httpOptions).pipe(
     tap((response) => {
       // 🔔 Notificar a los admins que se registró un nuevo usuario
       const currentUser = this.authService.getUser();
@@ -110,28 +110,28 @@ public validarDatos(data: any, editar: boolean, rol: string) {
   public obtenerListaUsuarios(): Observable<any> {
     const token = this.facadeService.getSessionToken();
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
-    return this.http.get<any>(`${environment.url_api}/lista-usuarios/`, { headers: headers });
+    return this.http.get<any>(`${environment.apiUrl}/lista-usuarios/`, { headers: headers });
   }
 
   public obtenerUsuariosAgregados(): Observable<any> {
     const token = this.facadeService.getSessionToken();
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
-    return this.http.get<any>(`${environment.url_api}/admin/users-aggregates/`, { headers: headers });
+    return this.http.get<any>(`${environment.apiUrl}/admin/users-aggregates/`, { headers: headers });
   }
 
   public getUsuarioByID(idUser: number) {
-    return this.http.get<any>(`${environment.url_api}/usuario/?id=${idUser}`, httpOptions);
+    return this.http.get<any>(`${environment.apiUrl}/usuario/?id=${idUser}`, httpOptions);
   }
 
   public editarUsuario(data: any): Observable<any> {
     const token = this.facadeService.getSessionToken();
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
-    return this.http.put<any>(`${environment.url_api}/usuario-edit/`, data, { headers: headers });
+    return this.http.put<any>(`${environment.apiUrl}/usuario-edit/`, data, { headers: headers });
   }
 
   public eliminarUsuario(idUser: number): Observable<any> {
     const token = this.facadeService.getSessionToken();
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
-    return this.http.delete<any>(`${environment.url_api}/usuario-edit/?id=${idUser}`, { headers: headers });
+    return this.http.delete<any>(`${environment.apiUrl}/usuario-edit/?id=${idUser}`, { headers: headers });
   }
 }

@@ -61,7 +61,7 @@ export class AuthInterceptor implements HttpInterceptor {
       }
 
       // pide nuevo access
-      return this.http.post<{ access: string }>(`${environment.url_api}/token/refresh/`, { refresh }).pipe(
+      return this.http.post<{ access: string }>(`${environment.apiUrl}/token/refresh/`, { refresh }).pipe(
         switchMap(res => {
           const newAccess = res.access;
           localStorage.setItem('access_token', newAccess);

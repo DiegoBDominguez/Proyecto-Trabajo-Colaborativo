@@ -32,9 +32,9 @@ export interface MensajeChat {
   providedIn: 'root'
 })
 export class ChatService {
-  // Use the full `url_api` and append the chat prefix so endpoints
+  // Use the full `apiUrl` and append the chat prefix so endpoints
   // resolve under /api/cuentas/chat/... as configured in Django
-  private apiUrl = `${environment.url_api}/chat`;
+  private apiUrl = `${environment.apiUrl}/chat`;
 
   // Observable para lista de conversaciones
   private conversacionesSubject = new BehaviorSubject<ConversacionChat[]>([]);

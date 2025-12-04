@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { ChatService } from './chat.service';
+import { environment } from 'src/environments/environment';
 
 export interface MensajeWS {
   conversacionId?: number;
@@ -37,7 +38,12 @@ export class ChatWebsocketService {
     }
 
     this.currentTicketId = ticketId;
-    const wsUrl = `ws://localhost:8000/ws/chat/${ticketId}/?token=${token}`;
+    // Construir URL de WS dinámicamente desde environment
+    const apiUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas o https://diegobd.pythonanywhere.com/api/cuentas
+    const u = new URL(apiUrl);
+    const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
+    const host = u.host; // incluye puerto
+    const wsUrl = `${protocol}://${host}/ws/chat/${ticketId}/?token=${token}`;
     
     console.log(`[Chat] Conectando a ${wsUrl}`);
     this.socket = new WebSocket(wsUrl);
@@ -83,7 +89,12 @@ export class ChatWebsocketService {
       return;
     }
 
-    const wsUrl = `ws://localhost:8000/ws/chat/?token=${token}`;
+    // Construir URL de WS dinámicamente desde environment
+    const apiUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas o https://diegobd.pythonanywhere.com/api/cuentas
+    const u = new URL(apiUrl);
+    const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
+    const host = u.host; // incluye puerto
+    const wsUrl = `${protocol}://${host}/ws/chat/?token=${token}`;
     
     console.log(`[ChatService] Conectando a ${wsUrl}`);
     this.socket = new WebSocket(wsUrl);

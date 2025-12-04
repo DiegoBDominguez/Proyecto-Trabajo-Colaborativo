@@ -94,34 +94,34 @@ export class AdministradoresService {
   public registrarAdmin(data: any): Observable<any> {
     // Asegurarse de que username sea el email y rol sea 'admin'
     const payload = { ...data, username: data.email, rol: 'admin' };
-    return this.http.post<any>(`${environment.url_api}/register/admin/`, payload, httpOptions);
+    return this.http.post<any>(`${environment.apiUrl}/register/admin/`, payload, httpOptions);
   }
 
   public obtenerListaAdmins(): Observable<any> {
     const token = this.facadeService.getSessionToken();
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
-    return this.http.get<any>(`${environment.url_api}/lista-admins/`, { headers });
+    return this.http.get<any>(`${environment.apiUrl}/lista-admins/`, { headers });
   }
 
   public getAdminByID(idUser: number) {
-    return this.http.get<any>(`${environment.url_api}/admin/?id=${idUser}`, httpOptions);
+    return this.http.get<any>(`${environment.apiUrl}/admin/?id=${idUser}`, httpOptions);
   }
 
   public editarAdmin(data: any): Observable<any> {
     const token = this.facadeService.getSessionToken();
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
-    return this.http.put<any>(`${environment.url_api}/admins-edit/`, data, { headers });
+    return this.http.put<any>(`${environment.apiUrl}/admins-edit/`, data, { headers });
   }
 
   public eliminarAdmin(idUser: number): Observable<any> {
     const token = this.facadeService.getSessionToken();
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
-    return this.http.delete<any>(`${environment.url_api}/admins-edit/?id=${idUser}`, { headers });
+    return this.http.delete<any>(`${environment.apiUrl}/admins-edit/?id=${idUser}`, { headers });
   }
 
   public getTotalUsuarios(): Observable<any> {
     const token = this.facadeService.getSessionToken();
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
-    return this.http.get<any>(`${environment.url_api}/admins-edit/`, { headers });
+    return this.http.get<any>(`${environment.apiUrl}/admins-edit/`, { headers });
   }
 }
