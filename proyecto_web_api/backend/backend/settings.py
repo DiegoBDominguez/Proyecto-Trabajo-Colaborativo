@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'cámbiame-en-.env'
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'diegobd.pythonanywhere.com', 'proyecto-trabajo-colaborativo-ikw8.vercel.app']
+ALLOWED_HOSTS = ['diegobd.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,14 +67,11 @@ CHANNEL_LAYERS = {
     }
 }
 
-# --- Base de datos: MySQL leyendo my.cnf (para phpMyAdmin) ---
+# --- Base de datos: SQLite para PythonAnywhere ---
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': os.path.join(BASE_DIR, "my.cnf"),
-            'charset': 'utf8mb4',
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -92,12 +89,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# CORS (Angular local + Vercel + PythonAnywhere)
+# CORS (Angular)
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
-    'http://127.0.0.1:4200',
-    'https://proyecto-trabajo-colaborativo-ikw8.vercel.app',
-    'https://diegobd.pythonanywhere.com',
+    'https://proyecto-trabajo-colaborativo.vercel.app',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
