@@ -40,11 +40,21 @@ export class ChatWebsocketService {
 
     this.currentTicketId = ticketId;
     // Construir URL de WS dinámicamente desde environment
-    const apiUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas o https://diegobd.pythonanywhere.com/api/cuentas
-    const u = new URL(apiUrl);
-    const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
-    const host = u.host; // incluye puerto
-    const wsUrl = `${protocol}://${host}/ws/chat/${ticketId}/?token=${token}`;
+    let wsUrl: string;
+    const apiUrl = environment.apiUrl; // e.g. /api/cuentas (relative) o http://127.0.0.1:8001/api/cuentas (absolute)
+    
+    if (apiUrl.startsWith('http://') || apiUrl.startsWith('https://')) {
+      // URL absoluta: parsear y construir WS
+      const u = new URL(apiUrl);
+      const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
+      const host = u.host; // incluye puerto
+      wsUrl = `${protocol}://${host}/ws/chat/${ticketId}/?token=${token}`;
+    } else {
+      // URL relativa: construir desde window.location
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const host = window.location.host;
+      wsUrl = `${protocol}://${host}/ws/chat/${ticketId}/?token=${token}`;
+    }
     
     console.log(`[Chat] Conectando a ${wsUrl}`);
     this.socket = new WebSocket(wsUrl);
@@ -109,11 +119,21 @@ export class ChatWebsocketService {
     }
 
     // Construir URL de WS dinámicamente desde environment
-    const apiUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas o https://diegobd.pythonanywhere.com/api/cuentas
-    const u = new URL(apiUrl);
-    const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
-    const host = u.host; // incluye puerto
-    const wsUrl = `${protocol}://${host}/ws/chat/?token=${token}`;
+    let wsUrl: string;
+    const apiUrl = environment.apiUrl; // e.g. /api/cuentas (relative) o http://127.0.0.1:8001/api/cuentas (absolute)
+    
+    if (apiUrl.startsWith('http://') || apiUrl.startsWith('https://')) {
+      // URL absoluta: parsear y construir WS
+      const u = new URL(apiUrl);
+      const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
+      const host = u.host; // incluye puerto
+      wsUrl = `${protocol}://${host}/ws/chat/?token=${token}`;
+    } else {
+      // URL relativa: construir desde window.location
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const host = window.location.host;
+      wsUrl = `${protocol}://${host}/ws/chat/?token=${token}`;
+    }
     
     console.log(`[ChatService] Conectando a ${wsUrl}`);
     this.socket = new WebSocket(wsUrl);
