@@ -4,5 +4,5 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8001/api/cuentas'
+  apiUrl: 'https://diegobd2.pythonanywhere.com/api/cuentas'
 };

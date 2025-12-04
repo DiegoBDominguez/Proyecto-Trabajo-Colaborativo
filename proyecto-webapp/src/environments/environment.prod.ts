@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  // Use relative URL that works on any domain
-  apiUrl: '/api/cuentas'
+  apiUrl: 'https://diegobd2.pythonanywhere.com/api/cuentas'
 };
