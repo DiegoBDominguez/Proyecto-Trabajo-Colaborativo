@@ -81,18 +81,20 @@ class Attachment(models.Model):
 
 # ========== CHAT EN TIEMPO REAL ==========
 class ConversacionChat(models.Model):
-    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='conversaciones_chat', limit_choices_to={'rol': 'usuario'})
-    agente = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='conversaciones_chat_agente', limit_choices_to={'rol': 'agente'})
+    # Permitir conversaciones entre cualquier par de usuarios (sin restricción de rol)
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='conversaciones_chat_user')
+    otro_usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='conversaciones_chat_otro')
     ticket = models.ForeignKey(Ticket, on_delete=models.SET_NULL, null=True, blank=True, related_name='conversacion_chat')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     ultima_actividad = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('usuario', 'agente')
+        # Evitar duplicados: {A,B} == {B,A}
+        unique_together = (('usuario', 'otro_usuario'),)
         ordering = ['-ultima_actividad']
 
     def __str__(self):
-        return f"Chat {self.usuario.username} - {self.agente.username}"
+        return f"Chat {self.usuario.username} - {self.otro_usuario.username}"
 
 
 class MensajeChat(models.Model):
