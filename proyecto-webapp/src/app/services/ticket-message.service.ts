@@ -43,6 +43,26 @@ export class TicketMessageService {
   constructor(private http: HttpClient, private notificationService: NotificationService, private authService: AuthService) {}
 
   /**
+   * Recibe un mensaje entrante a través de WebSocket y lo agrega
+   * a la lista de mensajes si corresponde al ticket cargado.
+   * `raw` puede venir en distintas formas según el payload del WS.
+   */
+  recibirMensajeWS(raw: any): void {
+    try {
+      const normalized = this.normalizeMensaje(raw);
+      const currentTicketId = this.ticketIdActualSubject.value;
+      if (currentTicketId && normalized.ticket === currentTicketId) {
+        const current = this.mensajesSubject.value || [];
+        this.mensajesSubject.next([...current, normalized]);
+      } else {
+        // no hacemos nada si el ticket no está abierto
+      }
+    } catch (e) {
+      console.error('[TicketMessageService] Error procesando mensaje WS', e);
+    }
+  }
+
+  /**
    * Carga los mensajes de un ticket específico
    */
   cargarMensajes(ticketId: number): void {

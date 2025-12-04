@@ -22,24 +22,63 @@ export class NotificationService {
     private http: HttpClient,
     private notificationWsService: NotificationWsService
   ) {
-    // Obtener el ID del usuario actual
+    // Inicializar según el usuario actualmente en sesión (si aplica)
     const user = this.authService.getUser();
     if (user) {
-      this.currentUserId = user.id;
-    }
-    // Rol actual (si está disponible)
-    this.currentUserRole = this.authService.getRole();
-    this.loadNotifications();
-    
-    // Conectar WebSocket para notificaciones en tiempo real
-    if (this.currentUserId) {
-      this.notificationWsService.connect();
-      this.setupWebSocketListeners();
+      this.initializeForUser(user);
+    } else {
+      // Cargar desde localStorage si no hay usuario activo
+      this.loadFromLocalStorage();
     }
 
-    // Polling automático cada 5 segundos para asegurar que se cargan nuevas notificaciones
-    // (fallback si el WebSocket falla)
-    this.startAutoPoll();
+    // Suscribirse a cambios de autenticación (login/logout)
+    this.authService.authState.subscribe((payload) => {
+      if (payload) {
+        // payload puede ser LoginResponse o el user object; priorizamos payload.user
+        const userObj = (payload.user) ? payload.user : payload;
+        this.initializeForUser(userObj);
+      } else {
+        // Logout: limpiar estado y desconectar WS
+        this.clearAndDisconnect();
+      }
+    });
+  }
+
+  /**
+   * Inicializa el servicio de notificaciones para el usuario provisto.
+   */
+  private initializeForUser(user: any): void {
+    try {
+      this.currentUserId = user?.id ?? null;
+      this.currentUserRole = this.authService.getRole();
+      this.loadNotifications();
+
+      if (this.currentUserId) {
+        this.notificationWsService.connect();
+        this.setupWebSocketListeners();
+      }
+
+      this.startAutoPoll();
+    } catch (e) {
+      console.error('[NotificationService] Error initializing for user', e);
+    }
+  }
+
+  /**
+   * Limpia estado local y desconecta WebSocket (logout)
+   */
+  private clearAndDisconnect(): void {
+    try {
+      this.currentUserId = null;
+      this.currentUserRole = null;
+      this.notifications$.next([]);
+      this.unreadCount$.next(0);
+      this.saveNotifications();
+      if (this.pollInterval) { clearInterval(this.pollInterval); this.pollInterval = null; }
+      this.notificationWsService.disconnect();
+    } catch (e) {
+      console.error('[NotificationService] Error clearing state on logout', e);
+    }
   }
 
   private setupWebSocketListeners() {

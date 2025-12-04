@@ -8,16 +8,5 @@
       "source": "/ws/(.*)",
       "destination": "wss://diegobd.pythonanywhere.com/ws/$1"
     }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    }
   ]
 }

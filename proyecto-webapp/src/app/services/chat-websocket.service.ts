@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { ChatService } from './chat.service';
+import { TicketMessageService } from './ticket-message.service';
 import { environment } from 'src/environments/environment';
 
 export interface MensajeWS {
@@ -23,7 +24,7 @@ export class ChatWebsocketService {
   public messages$ = this.messageSubject.asObservable();
   public isConnected$ = this.connectionStatus.asObservable();
 
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, private ticketMessageService: TicketMessageService) {}
 
   // Conectar al WebSocket para un ticket específico
   connect(ticketId: number, token: string) {
@@ -39,11 +40,21 @@ export class ChatWebsocketService {
 
     this.currentTicketId = ticketId;
     // Construir URL de WS dinámicamente desde environment
-    const apiUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas o https://diegobd.pythonanywhere.com/api/cuentas
-    const u = new URL(apiUrl);
-    const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
-    const host = u.host; // incluye puerto
-    const wsUrl = `${protocol}://${host}/ws/chat/${ticketId}/?token=${token}`;
+    let wsUrl: string;
+    const apiUrl = environment.apiUrl; // e.g. /api/cuentas (relative) o http://127.0.0.1:8001/api/cuentas (absolute)
+    
+    if (apiUrl.startsWith('http://') || apiUrl.startsWith('https://')) {
+      // URL absoluta: parsear y construir WS
+      const u = new URL(apiUrl);
+      const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
+      const host = u.host; // incluye puerto
+      wsUrl = `${protocol}://${host}/ws/chat/${ticketId}/?token=${token}`;
+    } else {
+      // URL relativa: construir desde window.location
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const host = window.location.host;
+      wsUrl = `${protocol}://${host}/ws/chat/${ticketId}/?token=${token}`;
+    }
     
     console.log(`[Chat] Conectando a ${wsUrl}`);
     this.socket = new WebSocket(wsUrl);
@@ -57,6 +68,24 @@ export class ChatWebsocketService {
       try {
         const data = JSON.parse(event.data);
         if (data.type === 'message') {
+          const msg = {
+            id: data.id || 0,
+            ticket: this.currentTicketId,
+            usuario: data.usuario,
+            texto: data.mensaje,
+            esAgente: data.esAgente ?? data.es_agente ?? false,
+            fecha: data.fecha,
+            attachments: data.attachments || data.archivos || []
+          };
+
+          // Informar al servicio de mensajes de ticket para actualizar UI
+          try {
+            this.ticketMessageService.recibirMensajeWS(msg);
+          } catch (e) {
+            console.warn('[Chat] Error pasando mensaje al TicketMessageService', e);
+          }
+
+          // Emitir mensaje genérico también
           this.messageSubject.next({
             texto: data.mensaje,
             usuario: data.usuario,
@@ -90,11 +119,21 @@ export class ChatWebsocketService {
     }
 
     // Construir URL de WS dinámicamente desde environment
-    const apiUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas o https://diegobd.pythonanywhere.com/api/cuentas
-    const u = new URL(apiUrl);
-    const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
-    const host = u.host; // incluye puerto
-    const wsUrl = `${protocol}://${host}/ws/chat/?token=${token}`;
+    let wsUrl: string;
+    const apiUrl = environment.apiUrl; // e.g. /api/cuentas (relative) o http://127.0.0.1:8001/api/cuentas (absolute)
+    
+    if (apiUrl.startsWith('http://') || apiUrl.startsWith('https://')) {
+      // URL absoluta: parsear y construir WS
+      const u = new URL(apiUrl);
+      const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
+      const host = u.host; // incluye puerto
+      wsUrl = `${protocol}://${host}/ws/chat/?token=${token}`;
+    } else {
+      // URL relativa: construir desde window.location
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const host = window.location.host;
+      wsUrl = `${protocol}://${host}/ws/chat/?token=${token}`;
+    }
     
     console.log(`[ChatService] Conectando a ${wsUrl}`);
     this.socket = new WebSocket(wsUrl);
@@ -106,6 +145,7 @@ export class ChatWebsocketService {
 
     this.socket.onmessage = (event) => {
       try {
+        console.log('[ChatService] Mensaje WS raw:', event.data);
         const data = JSON.parse(event.data);
         if (data.type === 'message') {
           const mensaje: MensajeWS = {
@@ -116,6 +156,7 @@ export class ChatWebsocketService {
             fecha: data.fecha,
           };
           
+          console.log('[ChatService] Pasando mensaje a ChatService:', mensaje);
           // Pasar al ChatService para que actualice sus observables
           this.chatService.recibirMensajeEnTiempoReal({
             id: data.id || 0,
@@ -127,6 +168,8 @@ export class ChatWebsocketService {
           });
           
           this.messageSubject.next(mensaje);
+        } else {
+          console.log('[ChatService] Mensaje WS ignorado (tipo distinto de "message"):', data.type);
         }
       } catch (e) {
         console.error('[ChatService] Error parseando mensaje:', e);

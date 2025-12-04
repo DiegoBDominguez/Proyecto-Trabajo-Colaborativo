@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 export interface ConversacionChat {
@@ -133,7 +133,18 @@ export class ChatService {
   enviarMensaje(conversacionId: number, texto: string): Observable<MensajeChat> {
     // Backend exposes an action `enviar_mensaje` on the conversation viewset
     return this.http.post<MensajeChat>(`${this.apiUrl}/conversaciones/${conversacionId}/enviar_mensaje/`, { texto })
-      .pipe(map((raw: any) => this.normalizeMensaje(raw)));
+      .pipe(
+        map((raw: any) => this.normalizeMensaje(raw)),
+        tap((mensaje) => {
+          // Optimistic append: agregar el mensaje al stream de mensajes inmediatamente
+          // para que el remitente lo vea sin esperar al broadcast del WebSocket
+          const conversacionActual = this.conversacionActualSubject.value;
+          if (conversacionActual && conversacionActual.id === conversacionId) {
+            const mensajeActual = this.mensajesSubject.value || [];
+            this.mensajesSubject.next([...mensajeActual, mensaje]);
+          }
+        })
+      );
   }
 
   /**
@@ -179,6 +190,8 @@ export class ChatService {
    * Llamado cuando llega un mensaje en tiempo real (desde WebSocket)
    */
   recibirMensajeEnTiempoReal(mensaje: MensajeChat): void {
+    console.log('[ChatService] Mensaje WS recibido:', mensaje, 'conversacionActual:', this.conversacionActualSubject.value);
+    
     // Emitir nuevo mensaje por el Subject general
     this.nuevoMensaje$.next(mensaje);
 
@@ -187,6 +200,7 @@ export class ChatService {
     // Si el mensaje pertenece a la conversación actualmente abierta,
     // agregarlo al stream de mensajes (para que se muestre en el panel).
     if (conversacionActual && conversacionActual.id === mensaje.conversacionId) {
+      console.log('[ChatService] Agregando mensaje a mensajesSubject (conversación abierta)');
       const mensajeActual = this.mensajesSubject.value;
       this.mensajesSubject.next([...mensajeActual, mensaje]);
     } else {
@@ -194,6 +208,7 @@ export class ChatService {
       const conversaciones = this.conversacionesSubject.value.slice();
       const idx = conversaciones.findIndex(c => c.id === mensaje.conversacionId);
       if (idx >= 0) {
+        console.log('[ChatService] Incrementando no leídos para conversación', mensaje.conversacionId);
         conversaciones[idx].ultimoMensaje = mensaje.texto;
         conversaciones[idx].ultimaActividad = mensaje.fecha;
         conversaciones[idx].noLeidos = (conversaciones[idx].noLeidos || 0) + 1;

@@ -1,7 +1,7 @@
 // src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
@@ -27,6 +27,10 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  // Emite eventos de login/logout para que otros servicios (p. ej. notificaciones)
+  // puedan reaccionar inmediatamente cuando cambie el estado de autenticación.
+  public authState: Subject<any | null> = new Subject<any | null>();
+
   /** Login -> guarda tokens, rol y user en localStorage */
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http
@@ -48,6 +52,7 @@ export class AuthService {
     localStorage.removeItem('rol');
     localStorage.removeItem('user');
     sessionStorage.clear();
+    try { this.authState.next(null); } catch (e) {}
     this.router.navigate(['/login-screen']);
   }
 
@@ -82,6 +87,8 @@ export class AuthService {
     if (res.refresh) localStorage.setItem('refresh_token', res.refresh);
     if (res.rol) localStorage.setItem('rol', res.rol);
     if (res.user) localStorage.setItem('user', JSON.stringify(res.user));
+    // Emitir evento de login para que otros servicios se inicialicen
+    try { this.authState.next(res); } catch (e) {}
   }
 
   /** Valida el token con el backend (opcional, para seguridad adicional) */

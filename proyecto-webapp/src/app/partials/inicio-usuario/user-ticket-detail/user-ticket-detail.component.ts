@@ -4,6 +4,8 @@ import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { TicketService } from '../../../services/ticket.service';
 import { TicketMessageService, MensajeTicket } from '../../../services/ticket-message.service';
+import { ChatWebsocketService } from 'src/app/services/chat-websocket.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { Ticket } from '../../../models/ticket.model';
 
 @Component({
@@ -23,12 +25,15 @@ export class UserTicketDetailComponent implements OnInit, OnDestroy {
   
   private subTicket: Subscription | undefined;
   private subMensajes: Subscription | undefined;
+  private token = localStorage.getItem('access_token') || '';
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
     private ticketService: TicketService,
-    private ticketMessageService: TicketMessageService
+    private ticketMessageService: TicketMessageService,
+    private chatWebsocket: ChatWebsocketService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -43,12 +48,22 @@ export class UserTicketDetailComponent implements OnInit, OnDestroy {
 
     // Cargar mensajes del ticket
     this.ticketMessageService.cargarMensajes(id);
+
+    // Conectar WebSocket para este ticket (recibir mensajes en tiempo real)
+    try {
+      this.chatWebsocket.connect(id, this.token);
+    } catch (e) {
+      console.warn('[UserTicketDetail] No se pudo conectar WebSocket', e);
+    }
   }
 
   ngOnDestroy() {
     this.subTicket?.unsubscribe();
     this.subMensajes?.unsubscribe();
     this.ticketMessageService.limpiar();
+    try {
+      this.chatWebsocket.disconnect();
+    } catch (e) {}
   }
 
   isClosed(t?: Ticket): boolean {

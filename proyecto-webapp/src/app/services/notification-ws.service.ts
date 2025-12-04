@@ -42,26 +42,40 @@ export class NotificationWsService {
       return;
     }
 
-    // Construir la URL de WS a partir de la configuración del backend (en dev el API puede correr en otro puerto)
+    // Construir la URL de WS a partir de la configuración del backend
+    let wsUrl: string;
     try {
-      const apiUrl = environment.apiUrl; // e.g. http://127.0.0.1:8001/api/cuentas
-      const u = new URL(apiUrl);
-      const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
-      const host = u.host; // incluye puerto
-      const basePath = u.pathname.replace(/\/$/, '');
-      // Endpoint WS esperado en backend: /ws/notifications/
-      const wsUrl = `${protocol}://${host}/ws/notifications/?token=${encodeURIComponent(token)}`;
+      const apiUrl = environment.apiUrl; // e.g. /api/cuentas (relative) o http://127.0.0.1:8001/api/cuentas (absolute)
+      
+      if (apiUrl.startsWith('http://') || apiUrl.startsWith('https://')) {
+        // URL absoluta: parsear y construir WS
+        const u = new URL(apiUrl);
+        const protocol = u.protocol === 'https:' ? 'wss' : 'ws';
+        const host = u.host; // incluye puerto
+        wsUrl = `${protocol}://${host}/ws/notifications/?token=${encodeURIComponent(token)}`;
+      } else {
+        // URL relativa: construir desde window.location
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const host = window.location.host;
+        wsUrl = `${protocol}://${host}/ws/notifications/?token=${encodeURIComponent(token)}`;
+      }
       console.log('[NotificationWsService] Intentando conectar a:', wsUrl);
-
-      this.ws = new WebSocket(wsUrl);
     } catch (err) {
-      // Fallback: intentar con window.location (prod scenario)
+      // Fallback: intentar con window.location
       const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
       const host = window.location.host;
-      const wsUrl = `${protocol}://${host}/ws/notifications/?token=${encodeURIComponent(token)}`;
+      wsUrl = `${protocol}://${host}/ws/notifications/?token=${encodeURIComponent(token)}`;
       console.warn('[NotificationWsService] Error construyendo WS desde environment, usando window.location:', err);
       console.log('[NotificationWsService] Intentando conectar a (fallback):', wsUrl);
+    }
+
+    try {
       this.ws = new WebSocket(wsUrl);
+    } catch (e) {
+      console.error('[NotificationWsService] Error creating WebSocket', e);
+      this.connectionStatus$.next('error');
+      this.attemptReconnect();
+      return;
     }
 
     try {
@@ -93,7 +107,7 @@ export class NotificationWsService {
         this.attemptReconnect();
       };
     } catch (e) {
-      console.error('[NotificationWsService] Error creating WebSocket', e);
+      console.error('[NotificationWsService] Error setting up WebSocket handlers', e);
       this.connectionStatus$.next('error');
       this.attemptReconnect();
     }

@@ -470,30 +470,21 @@ class ConversacionChatViewSet(ModelViewSet):
     pagination_class = None
 
     def get_queryset(self):
-        # Mostrar conversaciones según el rol:
-        # - usuario: sus conversaciones (usuario == request.user)
-        # - agente: conversaciones donde es el agente (agente == request.user)
-        # - admin: ver todas
+        # Mostrar conversaciones del usuario actual (puede ser usuario o agente)
+        # Una conversación pertenece al user si es usuario O otro_usuario
         user = self.request.user
-        rol = getattr(user, 'rol', None)
-
-        if rol == 'agente':
-            return ConversacionChat.objects.filter(agente=user).order_by('-ultima_actividad')
-
-        if rol == 'usuario':
-            return ConversacionChat.objects.filter(usuario=user).order_by('-ultima_actividad')
-
-        # admin u otros: retornar todas
-        return ConversacionChat.objects.all().order_by('-ultima_actividad')
+        from django.db.models import Q
+        return ConversacionChat.objects.filter(
+            Q(usuario=user) | Q(otro_usuario=user)
+        ).order_by('-ultima_actividad')
 
     @action(detail=False, methods=['post'])
     def por_email(self, request):
         """
-        Inicia una conversación con un agente por su email.
-        Crea la conversación si no existe.
-        Payload: {"agente_email": "agente@example.com"}
+        Inicia una conversación con otro usuario por su email.
+        Crea la conversación si no existe. Permite conversaciones entre cualquier rol.
+        Payload: {"email": "otro@example.com"}
         """
-        # Ahora aceptamos cualquier 'email' y determinamos el rol para crear
         email = request.data.get('email')
 
         if not email:
@@ -504,14 +495,24 @@ class ConversacionChatViewSet(ModelViewSet):
         except CustomUser.DoesNotExist:
             return Response({"error": "No se encontró usuario con ese email"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Determinar pares válidos: conversacion siempre entre usuario <-> agente
         requester = request.user
-        if requester.rol == 'usuario' and target.rol == 'agente':
-            conversacion, created = ConversacionChat.objects.get_or_create(usuario=requester, agente=target)
-        elif requester.rol == 'agente' and target.rol == 'usuario':
-            conversacion, created = ConversacionChat.objects.get_or_create(usuario=target, agente=requester)
+        
+        # No permitir conversación consigo mismo
+        if requester.id == target.id:
+            return Response({"error": "No puedes iniciar una conversación contigo mismo"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Crear o recuperar conversación entre ambos usuarios
+        # Para evitar duplicados (A->B vs B->A), siempre ordenamos por ID
+        if requester.id < target.id:
+            conversacion, created = ConversacionChat.objects.get_or_create(
+                usuario=requester,
+                otro_usuario=target
+            )
         else:
-            return Response({"error": "No se puede iniciar conversación entre estos roles (solo usuario <-> agente)."}, status=status.HTTP_400_BAD_REQUEST)
+            conversacion, created = ConversacionChat.objects.get_or_create(
+                usuario=target,
+                otro_usuario=requester
+            )
 
         serializer = self.get_serializer(conversacion)
         return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
@@ -532,8 +533,8 @@ class ConversacionChatViewSet(ModelViewSet):
         """Obtiene los mensajes de una conversación"""
         conversacion = self.get_object()
         
-        # Verificar que el usuario sea el propietario
-        if conversacion.usuario != request.user and conversacion.agente != request.user:
+        # Verificar que el usuario sea uno de los participantes
+        if conversacion.usuario != request.user and conversacion.otro_usuario != request.user:
             return Response(
                 {"error": "No tienes permiso para ver esta conversación"},
                 status=status.HTTP_403_FORBIDDEN
@@ -548,8 +549,8 @@ class ConversacionChatViewSet(ModelViewSet):
         """Envía un mensaje en una conversación"""
         conversacion = self.get_object()
 
-        # Verificar que el usuario sea el propietario
-        if conversacion.usuario != request.user and conversacion.agente != request.user:
+        # Verificar que el usuario sea uno de los participantes
+        if conversacion.usuario != request.user and conversacion.otro_usuario != request.user:
             return Response(
                 {"error": "No tienes permiso"},
                 status=status.HTTP_403_FORBIDDEN
