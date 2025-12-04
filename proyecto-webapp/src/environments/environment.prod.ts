@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  // Use relative URL that works on any domain
-  apiUrl: '/api/cuentas'
+  // Point directly to PythonAnywhere backend
+  apiUrl: 'https://diegobd.pythonanywhere.com/api/cuentas'
 };
