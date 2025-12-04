@@ -1,0 +1,12 @@
+.admin-dashboard { padding: 18px; }
+.top-row { margin-bottom: 18px }
+.charts-row { display:flex; gap:16px; margin-bottom:16px }
+.chart-col { flex:1 }
+.chart-wide { background: #fff; padding:12px; border-radius:10px; box-shadow: 0 6px 18px rgba(0,0,0,0.06) }
+.bottom-row { display:flex; gap:16px; margin-top:16px }
+.side-table { width:320px }
+
+@media (max-width:900px) {
+  .charts-row { flex-direction:column }
+  .bottom-row { flex-direction:column }
+}

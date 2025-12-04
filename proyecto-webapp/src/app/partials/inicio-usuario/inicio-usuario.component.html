@@ -1,0 +1,206 @@
+<div class="navbar">
+  <div class="logo">Usuario</div>
+  <div class="nav-buttons">
+    <app-notification-bell></app-notification-bell>
+    <button class="nav-btn logout-btn" (click)="logout()" title="Cerrar sesión">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Cerrar sesión</span>
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- SIDEBAR -->
+  <div class="sidebar" [class.collapsed]="!isMenuOpen">
+    <button class="sidebar-title" (click)="toggleMenu()">
+      <i class="fas fa-bars"></i>
+      <span *ngIf="isMenuOpen"> Menú</span>
+    </button>
+
+    <div class="sidebar-content">
+      <button class="sidebar-item" routerLink="mis-tickets" routerLinkActive="active"
+              (click)="cambiarTitulo('Mis Tickets')">
+        <i class="fas fa-ticket sidebar-icon"></i>
+        <span *ngIf="isMenuOpen">Mis Tickets</span>
+      </button>
+
+      <button class="sidebar-item" routerLink="historial-tickets" routerLinkActive="active"
+          (click)="cambiarTitulo('Historial de Tickets')">
+        <i class="fas fa-history sidebar-icon"></i>
+        <span *ngIf="isMenuOpen">Historial</span>
+      </button>
+
+      <button class="sidebar-item" routerLink="crear-ticket" routerLinkActive="active"
+              (click)="cambiarTitulo('Crear Ticket')">
+        <i class="fas fa-plus sidebar-icon"></i>
+        <span *ngIf="isMenuOpen">Crear Ticket</span>
+      </button>
+
+      <button class="sidebar-item" routerLink="editar-perfil" routerLinkActive="active"
+              (click)="cambiarTitulo('Editar Perfil')">
+        <i class="fas fa-user-edit sidebar-icon"></i>
+        <span *ngIf="isMenuOpen">Editar Perfil</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="main-content" [class.expanded]="isMenuOpen">
+    <div class="welcome" [ngClass]="{ animar: animandoTitulo }" *ngIf="tituloSeccion === ''">
+      Bienvenido, Usuario
+    </div>
+    <div class="welcome" [ngClass]="{ animar: animandoTitulo }" *ngIf="tituloSeccion !== ''">
+      {{ tituloSeccion }}
+    </div>
+
+    <router-outlet></router-outlet>
+
+    <!-- BOTONES FLOTANTES -->
+    <!-- AQUÍ ESTÁ EL CAMBIO: ahora llama a abrirChat() -->
+    <button class="chat-button" (click)="abrirChat()">
+      <img src="assets/images/chat.jpg" alt="Chat" class="content-icon" />
+    </button>
+  </div>
+</div>
+
+<!-- CHAT TIPO WHATSAPP – BIEN POSICIONADO -->
+<div class="chat-overlay" *ngIf="mostrarChat">
+  <div class="chat-multi-box" (click)="$event.stopPropagation()">
+    
+    <!-- Header -->
+    <div class="chat-multi-header">
+      <div class="header-title">
+        <i class="fas fa-headset"></i>
+        <strong>Chat con Agentes</strong>
+      </div>
+      <button class="close-btn" (click)="cerrarChat()">×</button>
+    </div>
+
+    <div class="chat-multi-container">
+      <!-- Panel izquierdo: Lista de conversaciones -->
+      <div class="conversaciones-panel">
+        <!-- Buscador -->
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" 
+                 [(ngModel)]="buscarText" 
+                 (input)="buscarConversaciones()"
+                 placeholder="Buscar conversación...">
+        </div>
+
+        <!-- Botón nueva conversación -->
+        <button class="new-conversation-btn" (click)="iniciarNuevaConversacion()">
+          <i class="fas fa-plus-circle"></i>
+          <span>Nueva conversación</span>
+        </button>
+
+        <!-- Lista de conversaciones -->
+        <div class="conversaciones-lista">
+          <div *ngFor="let conv of filteredConversaciones"
+               class="conv-item"
+               [class.active]="conversacionActual?.id === conv.id"
+               (click)="seleccionarConversacion(conv)">
+            <div class="conv-avatar">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="conv-info">
+              <div class="conv-nombre">{{ conv.agentEmail || conv.agenteName || 'Agente' }}</div>
+              <div class="conv-preview">{{ conv.ultimoMensaje || conv.ticketAsunto || 'Sin mensajes' }}</div>
+            </div>
+            <div class="conv-meta">
+              <span class="conv-fecha">{{ conv.ultimaActividad | date:'HH:mm' }}</span>
+              <span class="badge" *ngIf="conv.noLeidos && conv.noLeidos > 0">{{ conv.noLeidos }}</span>
+            </div>
+          </div>
+
+          <!-- Sin conversaciones -->
+          <div *ngIf="filteredConversaciones.length === 0" class="empty-conversations">
+            <p>No hay conversaciones</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel derecho: Conversación activa -->
+      <div class="conversation-panel">
+        <!-- Header de conversación -->
+        <div class="conv-header-active" *ngIf="conversacionActual">
+          <div class="header-left">
+            <i class="fas fa-user-circle"></i>
+            <div>
+              <div class="conv-title">{{ conversacionActual.agentEmail || conversacionActual.agenteName || 'Agente' }}</div>
+              <div class="conv-subtitle">{{ conversacionActual.ticketAsunto }}</div>
+            </div>
+          </div>
+          <div class="header-right">
+            <i class="fas fa-info-circle"></i>
+          </div>
+        </div>
+
+        <!-- Mensajes -->
+        <div class="chat-messages-active" *ngIf="conversacionActual; else noConv">
+          <div *ngFor="let m of mensajes"
+               class="mensaje" 
+               [class.usuario]="!m.esAgente" 
+               [class.agente]="m.esAgente">
+            <div class="burbuja">
+              <p class="mensaje-texto">{{ m.texto }}</p>
+              <span class="hora">{{ m.fecha | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noConv>
+          <div class="no-conv-selected">
+            <i class="fas fa-comments"></i>
+            <p>Selecciona una conversación para comenzar</p>
+          </div>
+        </ng-template>
+
+        <!-- Input de mensaje -->
+        <div class="chat-input-multi" *ngIf="conversacionActual">
+          <textarea [(ngModel)]="mensajeActual"
+                    placeholder="Escribe un mensaje..."
+                    rows="1"
+                    (keydown.enter)="manejarEnter($event)"
+                    class="mensaje-input">
+          </textarea>
+          <button (click)="enviarMensaje()" 
+                  [disabled]="!mensajeActual || mensajeActual.trim() === ''"
+                  class="enviar-btn"
+                  title="Enviar mensaje (Enter)">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA CONVERSACIÓN -->
+<div class="modal-overlay" *ngIf="mostrarModalNuevaConversacion" (click)="cerrarModalNuevaConversacion()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Iniciar nueva conversación</h2>
+      <button class="modal-close" (click)="cerrarModalNuevaConversacion()">×</button>
+    </div>
+    <div class="modal-body">
+      <label for="agentEmail">Correo del agente:</label>
+      <input type="email" 
+             id="agentEmail"
+             [(ngModel)]="emailAgenteBuscado"
+             (keydown.enter)="buscarYCrearConversacion()"
+             placeholder="ejemplo@gmail.com"
+             class="modal-input">
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn cancel-btn" (click)="cerrarModalNuevaConversacion()">Cancelar</button>
+      <button class="modal-btn confirm-btn" 
+              (click)="buscarYCrearConversacion()"
+              [disabled]="!emailAgenteBuscado || emailAgenteBuscado.trim() === ''">
+        Iniciar conversación
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">© 2025 Usuario</div>

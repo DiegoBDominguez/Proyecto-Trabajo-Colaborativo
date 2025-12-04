@@ -1,0 +1,90 @@
+<div class="registro-wrapper">
+  <!-- Panel izquierdo -->
+  <div class="registro-info">
+    <div class="icono-usuario">
+      <mat-icon>admin_panel_settings</mat-icon>
+    </div>
+    <h2>Registro Administrador</h2>
+    <p>Registro especial para administradores responsables de la supervisión del sistema.</p>
+
+    <ul class="beneficios">
+      <li><mat-icon>dashboard</mat-icon> Panel de métricas</li>
+      <li><mat-icon>group</mat-icon> Gestión de usuarios</li>
+      <li><mat-icon>bar_chart</mat-icon> Reportes avanzados</li>
+      <li><mat-icon>settings</mat-icon> Configuración del sistema</li>
+    </ul>
+  </div>
+
+  <!-- Panel derecho -->
+  <div class="registro-form">
+    <h2>Registro de Administrador</h2>
+    <p>Completa tus datos para acceder al sistema</p>
+
+    <form (ngSubmit)="registrar()">
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>ID de Administrador</mat-label>
+        <input matInput [(ngModel)]="admin.clave_admin" name="id" placeholder="Escribe clave de administrador" (keydown)="soloNumeros($event)">
+      </mat-form-field>
+      <div *ngIf="errors.clave_admin" class="invalid-feedback">{{ errors.clave_admin }}</div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Nombre</mat-label>
+          <input matInput [(ngModel)]="admin.first_name" name="first_name" placeholder="Escribe nombre" (keypress)="soloLetras($event)">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Apellidos</mat-label>
+          <input matInput [(ngModel)]="admin.last_name" name="last_name" placeholder="Escribe apellidos" (keypress)="soloLetras($event)">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput [(ngModel)]="admin.email" name="email" placeholder="correo@ejemplo.com" [disabled]="editar">
+      </mat-form-field>
+
+      <div class="form-row" *ngIf="!editar">
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Contraseña</mat-label>
+          <input matInput [(ngModel)]="admin.password" name="password" type="{{ inputType_1 }}" placeholder="Escribe contraseña">
+          <mat-icon matSuffix (click)="showPassword()">{{hide_1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Confirmar contraseña</mat-label>
+          <input matInput [(ngModel)]="admin.confirmar_password" name="confirmar_password" type="{{ inputType_2 }}" placeholder="Confirma contraseña">
+          <mat-icon matSuffix (click)="showPwdConfirmar()">{{hide_2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Teléfono</mat-label>
+          <input matInput [(ngModel)]="admin.telefono" name="telefono" mask="(000) 000-0000" placeholder="Escribe teléfono" (keydown)="soloNumeros($event)" pattern="[0-9]*" maxlength="10">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>RFC</mat-label>
+          <input matInput minlength="12" maxlength="13" [(ngModel)]="admin.rfc" name="rfc" placeholder="RFC" style="text-transform: uppercase;">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Edad</mat-label>
+          <input matInput [(ngModel)]="admin.edad" name="edad" mask="00" placeholder="Edad">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Ocupación</mat-label>
+          <input matInput [(ngModel)]="admin.ocupacion" name="ocupacion" placeholder="Ocupación" (keypress)="soloLetras($event)">
+        </mat-form-field>
+      </div>
+
+      <div class="acciones">
+        <button class="btn-cancelar" (click)="regresar()">Cancelar</button>
+        <button *ngIf="!editar" class="btn-registrar" type="button" (click)="registrar()">Registrar</button>
+        <button *ngIf="editar" class="btn-registrar" type="button" (click)="actualizar()">Actualizar</button>
+      </div>
+    </form>
+  </div>
+</div>

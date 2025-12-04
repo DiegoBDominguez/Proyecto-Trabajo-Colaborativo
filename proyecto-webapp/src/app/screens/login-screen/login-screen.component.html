@@ -1,0 +1,94 @@
+<section class="login">
+  <div class="wrapper">
+    <!-- Sección izquierda -->
+    <div class="section-left">
+      <div class="content-left">
+        <h2><i class="bi bi-ticket-perforated-fill"></i> BUAP</h2>
+        <h4>Sistema Helpdesk</h4>
+        <p>
+          Plataforma integral para la gestión efectiva de incidencias y soporte técnico interno
+        </p>
+
+        <div class="features">
+          <div class="feature-item">
+            <i class="bi bi-lightning-fill"></i>
+            <span>Seguimiento en tiempo real</span>
+          </div>
+          <div class="feature-item">
+            <i class="bi bi-chat-dots-fill"></i>
+            <span>Chat directo con agentes</span>
+          </div>
+          <div class="feature-item">
+            <i class="bi bi-grid-fill"></i>
+            <span>Panel personalizado</span>
+          </div>
+          <div class="feature-item">
+            <i class="bi bi-shield-lock-fill"></i>
+            <span>Seguridad garantizada</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección derecha -->
+    <div class="section-right">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="title">Iniciar Sesión</h3>
+          <p class="subtitle">Bienvenido de vuelta, ingresa tus credenciales</p>
+
+          <!-- Correo -->
+          <div class="mb-3 input-group-custom">
+            <span class="icon"><i class="bi bi-envelope-fill"></i></span>
+            <input
+              type="email"
+              [(ngModel)]="username"
+              class="form-control"
+              placeholder="usuario@buap.mx"
+            />
+          </div>
+
+          <!-- Contraseña -->
+          <div class="mb-3 input-group-custom">
+            <span class="icon"><i class="bi bi-lock-fill"></i></span>
+            <input
+              type="{{ type }}"
+              [(ngModel)]="password"
+              class="form-control"
+              placeholder="Contraseña"
+              (keyup.enter)="login()"
+            />
+            <span class="icon action" (click)="showPassword()">
+              <i *ngIf="type == 'password'" class="bi bi-eye-fill"></i>
+              <i *ngIf="type == 'text'" class="bi bi-eye-slash-fill"></i>
+            </span>
+          </div>
+
+          <!-- Recordar -->
+          <div class="form-check mb-3 d-flex justify-content-between">
+            <div>
+              <input class="form-check-input" type="checkbox" id="keep-session" />
+              <label class="form-check-label" for="keep-session">
+                Recordarme
+              </label>
+            </div>
+            <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <!-- Botón -->
+          <div class="d-grid mb-3">
+            <button class="btn btn-primary" type="submit" (click)="login()" [disabled]="loading">
+              {{ loading ? 'Cargando...' : 'Iniciar Sesión' }}
+            </button>
+          </div>
+
+          <!-- Registro -->
+          <div class="text-center register-link">
+            ¿No tienes cuenta?
+            <a routerLink="/registro-usuarios-screen">Regístrate aquí</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

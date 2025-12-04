@@ -1,0 +1,129 @@
+.registro-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  border-radius: 12px;
+  overflow: hidden;
+
+  .registro-info {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 30px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .beneficios {
+      list-style: none;
+      padding: 0;
+
+      li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        font-size: 14px;
+
+        mat-icon {
+          margin-right: 8px;
+          color: #ffd740;
+        }
+      }
+    }
+  }
+.registro-form {
+  flex: 2;
+  background: white;
+  padding: 40px;
+  overflow-y: auto;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+
+    mat-form-field {
+      flex: 1;
+    }
+  }
+
+  .acciones {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+
+    .btn-cancelar,
+    .btn-registrar {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      color: white;
+    }
+
+    .btn-cancelar {
+      background: #f44336;
+    }
+
+    .btn-registrar {
+      background: linear-gradient(90deg, #5a4fcf, #8e7bff);
+    }
+  }
+}
+
+}
+
+@media (max-width: 992px) {
+  .registro-wrapper {
+    flex-direction: column;
+
+    .registro-info {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .registro-form {
+      padding: 20px;
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+
+        mat-form-field {
+          width: 100%;
+        }
+      }
+
+      .acciones {
+        flex-direction: column;
+        align-items: stretch;
+
+        .btn-cancelar,
+        .btn-registrar {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

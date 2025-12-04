@@ -1,0 +1,85 @@
+<div class="registro-wrapper">
+  <!-- Panel izquierdo -->
+  <div class="registro-info">
+    <div class="icono-usuario">
+      <mat-icon>person</mat-icon>
+    </div>
+    <h2>Registro Usuario</h2>
+    <p>Registro para colaboradores que necesitan soporte técnico y seguimiento de incidencias.</p>
+
+    <ul class="beneficios">
+      <li><mat-icon>add_task</mat-icon> Crear tickets de soporte</li>
+      <li><mat-icon>chat</mat-icon> Chat con agentes</li>
+      <li><mat-icon>assignment</mat-icon> Seguimiento de incidencias</li>
+      <li><mat-icon>history</mat-icon> Historial personal</li>
+    </ul>
+  </div>
+
+  <!-- Panel derecho -->
+  <div class="registro-form">
+    <h2>Registro de Usuario</h2>
+    <p>Completa tus datos para acceder al sistema</p>
+
+    <form>
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>ID de Usuario</mat-label>
+        <input matInput [(ngModel)]="usuario.clave_usuario" name="id" placeholder="Escribe tu ID de usuario" (keydown)="soloNumeros($event)">
+      </mat-form-field>
+      <div *ngIf="errors.clave_usuario" class="invalid-feedback">{{ errors.clave_usuario }}</div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Nombre</mat-label>
+          <input matInput [(ngModel)]="usuario.first_name" name="first_name" placeholder="Escribe nombre" (keypress)="soloLetras($event)">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Apellidos</mat-label>
+          <input matInput [(ngModel)]="usuario.last_name" name="last_name" placeholder="Escribe apellidos" (keypress)="soloLetras($event)">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput [(ngModel)]="usuario.email" name="email" placeholder="correo@ejemplo.com" [disabled]="editar">
+      </mat-form-field>
+
+      <div class="form-row" *ngIf="!editar">
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Contraseña</mat-label>
+          <input matInput [(ngModel)]="usuario.password" name="password" type="{{ inputType_1 }}" placeholder="Escribe contraseña">
+          <mat-icon matSuffix (click)="showPassword()">{{hide_1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Confirmar contraseña</mat-label>
+          <input matInput [(ngModel)]="usuario.confirmar_password" name="confirmar_password" type="{{ inputType_2 }}" placeholder="Confirma contraseña">
+          <mat-icon matSuffix (click)="showPwdConfirmar()">{{hide_2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>Teléfono</mat-label>
+        <input matInput [(ngModel)]="usuario.telefono" name="telefono" mask="(000) 000-0000" placeholder="Escribe teléfono" (keydown)="soloNumeros($event)" pattern="[0-9]*" maxlength="10">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>Edad</mat-label>
+        <input matInput [(ngModel)]="usuario.edad" name="edad" mask="00" placeholder="Edad">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>Área</mat-label>
+        <input matInput [(ngModel)]="usuario.area" name="area" placeholder="Área de trabajo" (keypress)="soloLetras($event)">
+      </mat-form-field>
+      </div>
+
+      <div class="acciones">
+        <button class="btn-cancelar" (click)="regresar()">Cancelar</button>
+        <button *ngIf="!editar" class="btn-registrar" type="submit" (click)="registrar()">Registrar</button>
+        <button *ngIf="editar" class="btn-registrar" type="submit" (click)="actualizar()">Actualizar</button>
+      </div>
+    </form>
+  </div>
+</div>

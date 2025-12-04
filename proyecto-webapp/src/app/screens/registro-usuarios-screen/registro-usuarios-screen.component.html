@@ -1,0 +1,69 @@
+<div class="registro-wrapper">
+  <div class="registro-container">
+    <h2 class="registro-title">Selecciona tu Rol</h2>
+    <p class="registro-subtitle">
+      Elige la opción que mejor describa tu función en la empresa
+
+    <div class="roles-grid">
+      <!-- Usuario -->
+      <div class="role-card" [class.active]="tipo_user === 'usuario'" (click)="selectRole('usuario')">
+        <div class="role-icon">
+          <i class="fas fa-user"></i>
+        </div>
+        <h3>Usuario</h3>
+        <p>
+          Colaborador que necesita soporte técnico para resolver incidencias del día a día.
+        </p>
+        <ul>
+          <li>✔ Crear tickets de soporte</li>
+          <li>✔ Chat con agentes</li>
+          <li>✔ Seguimiento de incidencias</li>
+          <li>✔ Historial personal</li>
+        </ul>
+        <button class="btn-role">Acceso Inmediato</button>
+      </div>
+
+      <!-- Agente -->
+      <div class="role-card" [class.active]="tipo_user === 'agente'" (click)="selectRole('agente')">
+        <div class="role-icon">
+          <i class="fas fa-headset"></i>
+        </div>
+        <h3>Agente</h3>
+        <p>
+          Personal de IT que proporciona soporte técnico y resuelve incidencias de usuarios.
+        </p>
+        <ul>
+          <li>✔ Gestionar cola de tickets</li>
+          <li>✔ Chat con usuarios</li>
+          <li>✔ Escalamiento de casos</li>
+          <li>✔ Métricas de rendimiento</li>
+        </ul>
+        <button class="btn-role">Verificación IT Requerida</button>
+      </div>
+
+      <!-- Administrador -->
+      <div class="role-card" [class.active]="tipo_user === 'administrador'" (click)="selectRole('administrador')">
+        <div class="role-icon">
+          <i class="fas fa-cogs"></i>
+        </div>
+        <h3>Administrador</h3>
+        <p>
+          Responsable de la supervisión del sistema y gestión del área de soporte.
+        </p>
+        <ul>
+          <li>✔ Panel de métricas</li>
+          <li>✔ Gestión de usuarios</li>
+          <li>✔ Reportes avanzados</li>
+          <li>✔ Configuración sistema</li>
+        </ul>
+        <button class="btn-role">Autorización Especial</button>
+      </div>
+    </div>
+
+    <div class="action-btn">
+      <button class="btn-continue" [disabled]="!tipo_user" (click)="continuarRegistro()">
+        Continuar con el Registro
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,328 @@
+.tickets-wrapper {
+  padding: 20px;
+  background-color: #fafafa; // Coherente con el main-content
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // Coherente con las sombras del proyecto
+}
+
+.tickets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+    display: flex;
+    align-items: center;
+
+    i {
+      margin-right: 10px;
+      color: #6a11cb; // Morado de la navbar y sidebar
+    }
+  }
+
+  .ticket-count {
+    margin: 0;
+    font-size: 16px;
+    color: #666;
+  }
+}
+
+.tickets-table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.tickets-table {
+  width: 100%;
+  min-width: 1100px; // hacer la tabla más ancha para mejores columnas
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  th {
+    background-color: #6a11cb; // Morado principal del proyecto
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+
+  tr {
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f3eaff; // Color de fondo hover del sidebar
+    }
+  }
+
+  .preview-image {
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  /* Estado badges */
+  .estado-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .estado-nuevo { background-color: #007bff; } /* azul */
+  .estado-respondido { background-color: #17a2b8; } /* cyan */
+  .estado-abierto { background-color: #28a745; } /* verde */
+  .estado-en-proceso { background-color: #ffc107; color: #333; } /* amarillo */
+  .estado-cerrado { background-color: #6c757d; } /* gris */
+}
+
+.no-tickets {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.btn-action {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+
+  i {
+    margin-right: 5px;
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btn-action:not(.btn-danger) {
+  background-color: #6a11cb; // Morado principal
+  color: #fff;
+
+  &:hover {
+    background-color: #5a0fbf; // Morado más oscuro para hover, similar al sidebar
+  }
+}
+
+.btn-danger {
+  background-color: #dc3545; // Rojo para eliminar, coherente con el diseño
+  color: #fff;
+
+  &:hover {
+    background-color: #c82333;
+  }
+}
+
+/* Estilos para mostrar título + descripción en la celda */
+.tickets-table .desc {
+  max-width: 420px;
+}
+
+.tickets-table .title {
+  display: block;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.tickets-table .small-desc {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  max-height: 3.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .tickets-table {
+    th, td {
+      padding: 8px 10px;
+      font-size: 14px;
+    }
+
+    th {
+      font-size: 12px;
+    }
+  }
+
+  .tickets-header h2 {
+    font-size: 20px;
+  }
+
+  .ticket-count {
+    font-size: 14px;
+  }
+}
+// src/app/partials/inicio-agente/tickets-asignados/tickets-asignados.component.scss
+.tickets-wrapper {
+  padding: 20px;
+  background-color: #fafafa; // Coherente con el main-content
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // Coherente con las sombras del proyecto
+}
+
+.tickets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+    display: flex;
+    align-items: center;
+
+    i {
+      margin-right: 10px;
+      color: #6a11cb; // Morado de la navbar y sidebar
+    }
+  }
+
+  .ticket-count {
+    margin: 0;
+    font-size: 16px;
+    color: #666;
+  }
+}
+
+.tickets-table-container {
+  overflow-x: auto;
+}
+
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  th {
+    background-color: #6a11cb; // Morado principal del proyecto
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+
+  tr {
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f3eaff; // Color de fondo hover del sidebar
+    }
+  }
+
+  .preview-image {
+    border-radius: 4px;
+    object-fit: cover;
+  }
+}
+
+.no-tickets {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.btn-action {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+
+  i {
+    margin-right: 5px;
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btn-action:not(.btn-danger) {
+  background-color: #6a11cb; // Morado principal
+  color: #fff;
+
+  &:hover {
+    background-color: #5a0fbf; // Morado más oscuro para hover, similar al sidebar
+  }
+}
+
+.btn-danger {
+  background-color: #dc3545; // Rojo para eliminar, coherente con el diseño
+  color: #fff;
+
+  &:hover {
+    background-color: #c82333;
+  }
+}
+
+@media (max-width: 768px) {
+  .tickets-table {
+    th, td {
+      padding: 8px 10px;
+      font-size: 14px;
+    }
+
+    th {
+      font-size: 12px;
+    }
+  }
+
+  .tickets-header h2 {
+    font-size: 20px;
+  }
+
+  .ticket-count {
+    font-size: 14px;
+  }
+}

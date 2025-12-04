@@ -1,0 +1,53 @@
+<div class="page-wrapper">
+  <div class="content-header">
+    <button class="btn-primary small" (click)="crearTicket()">+ Nuevo ticket</button>
+  </div>
+
+  <div class="card tickets-card">
+    <table class="tickets-table" *ngIf="tickets && tickets.length > 0; else empty">
+      <thead>
+        <tr>
+          <th>N° Ticket</th>
+          <th>Asunto / Descripción</th>
+          <th>Estado</th>
+          <th>Responsable</th>
+          <th>Fecha</th>
+          <th>Archivo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of tickets">
+          <td>{{ t.folio_usuario || t.folio }}</td>
+          <td class="desc">
+            <strong class="title">{{ t.titulo || '(Sin título)' }}</strong>
+            <div class="small-desc">{{ t.descripcion }}</div>
+          </td>
+          <td>
+            <span class="estado-badge" [ngClass]="{
+              'estado-nuevo': t.estado === 'Nuevo' || t.estado === 'Enviado',
+              'estado-respondido': t.estado === 'Respondido',
+              'estado-abierto': t.estado === 'Abierto',
+              'estado-en-proceso': t.estado === 'En Proceso',
+              'estado-cerrado': t.estado === 'Cerrado'
+            }">{{ t.estado }}</span>
+          </td>
+          <td>{{ t.responsable }}</td>
+          <td>{{ formatoFecha(t.fecha) }}</td>
+          <td>
+            <button *ngIf="t.archivoName" class="link-like" (click)="descargarArchivo(t)">{{ t.archivoName }}</button>
+            <span *ngIf="!t.archivoName">—</span>
+          </td>
+          <td>
+            <button class="btn-primary very-small" (click)="verEstado(t)">Ver ticket</button>
+            <button class="btn-danger very-small" (click)="borrar(t.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #empty>
+      <div class="empty-state">No hay tickets aún</div>
+    </ng-template>
+  </div>
+</div>

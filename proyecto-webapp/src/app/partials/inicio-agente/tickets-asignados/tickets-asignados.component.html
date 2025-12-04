@@ -1,0 +1,51 @@
+<div class="tickets-wrapper">
+  <div class="tickets-header">
+    <h2><i class="fas fa-ticket"></i> Tickets Asignados</h2>
+    <p class="ticket-count">Total: {{ tickets.length }} tickets</p>
+  </div>
+
+  <div class="tickets-table-container">
+    <table class="tickets-table" *ngIf="tickets.length > 0; else noTickets">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Asunto / Descripción</th>
+          <th>Categoría</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+          <th>Responsable</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of tickets">
+          <td>{{ ticket.id }}</td>
+          <td class="desc">
+            <strong class="title">{{ ticket.titulo || '(Sin título)' }}</strong>
+            <div class="small-desc">{{ ticket.descripcion }}</div>
+          </td>
+          <td>{{ ticket.categoria }}</td>
+          <td>{{ ticket.prioridad }}</td>
+          <td>
+            <span class="estado-badge" [ngClass]="estadoClass(ticket.estado)">{{ ticket.estado }}</span>
+          </td>
+          <td>{{ ticket.responsable }}</td>
+          <td>{{ ticket.fecha | date:'medium' }}</td>
+          <td>
+
+            <button class="btn-action" (click)="viewTicket(ticket.id)">
+              <i class="fas fa-eye"></i> Ver
+            </button>
+            <button class="btn-action btn-danger" (click)="deleteTicket(ticket.id)">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noTickets>
+      <div class="no-tickets">No hay tickets asignados.</div>
+    </ng-template>
+  </div>
+</div>

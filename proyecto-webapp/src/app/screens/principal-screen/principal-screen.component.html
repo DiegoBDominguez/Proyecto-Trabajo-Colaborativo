@@ -1,0 +1,33 @@
+<div class="landing-wrap">
+  <header class="navbar">
+    <div class="logo">
+      <i class="bi bi-ticket-perforated-fill"></i>
+      <span>Helpdesk BUAP</span>
+    </div>
+    <nav class="nav-buttons">
+      <button class="btn btn-login" (click)="navegarA('login-screen')">Iniciar Sesión</button>
+      <button class="btn btn-register" (click)="navegarA('registro-usuarios-screen')">Registrarse</button>
+    </nav>
+  </header>
+
+  <main class="content">
+    <div class="hero">
+      <div class="hero-card">
+        <div class="hero-title">Sistema de Gestión de Incidencias</div>
+        <p class="hero-desc">Gestiona incidencias de forma rápida y sencilla.</p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" (click)="navegarA('login-screen')">Iniciar Sesión</button>
+          <button class="btn btn-secondary" (click)="navegarA('registro-usuarios-screen')">Crear cuenta</button>
+        </div>
+
+        <div class="hint">Redirigiendo en <span class="countdown">{{countdown}}</span>s</div>
+      </div>
+      <div class="hero-decor"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>© 2025 BUAP - Facultad de Ciencias de la Computación</span>
+  </footer>
+</div>

@@ -1,0 +1,59 @@
+<div class="historial-wrapper">
+  <div class="historial-header">
+    <h2><i class="fas fa-history"></i> Historial de Tickets Cerrados</h2>
+    <p class="ticket-count">Total: {{ tickets.length }} tickets cerrados</p>
+  </div>
+
+  <div class="historial-card">
+    <div *ngIf="loading" class="loading-state">
+      <p>Cargando tickets cerrados...</p>
+    </div>
+
+    <table class="historial-table" *ngIf="!loading && tickets.length > 0; else empty">
+      <thead>
+        <tr>
+          <th>N° Folio</th>
+          <th>Asunto / Descripción</th>
+          <th>Categoría</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+          <th>Responsable</th>
+          <th>Fecha Cierre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of tickets">
+          <td>{{ ticket.folio_usuario || ticket.id }}</td>
+          <td class="desc">
+            <strong class="title">{{ ticket.titulo || '(Sin título)' }}</strong>
+            <div class="small-desc">{{ ticket.descripcion }}</div>
+          </td>
+          <td>{{ ticket.categoria }}</td>
+          <td>
+            <span class="priority-badge" [ngClass]="getPriorityClass(ticket.prioridad)">
+              {{ ticket.prioridad }}
+            </span>
+          </td>
+          <td>
+            <span class="estado-badge" [ngClass]="estadoClass(ticket.estado)">{{ ticket.estado }}</span>
+          </td>
+          <td>{{ ticket.responsable }}</td>
+          <td>{{ formatoFecha(ticket.fecha) }}</td>
+          <td>
+            <button class="btn-primary small" (click)="verDetalles(ticket)">
+              <i class="fas fa-eye"></i> Ver Detalles
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #empty>
+      <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>No hay tickets cerrados aún</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="perfil-wrapper">
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="form-row">
+      <label>Nombre</label>
+      <input type="text" formControlName="nombre" placeholder="Tu nombre completo">
+      <div *ngIf="f['nombre'].touched && f['nombre'].invalid" class="error">
+        <div *ngIf="f['nombre'].errors?.['required']">El nombre es obligatorio.</div>
+        <div *ngIf="f['nombre'].errors?.['minlength']">Debe tener al menos 3 caracteres.</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Correo electrónico</label>
+      <input type="email" formControlName="correo" placeholder="ejemplo@correo.com">
+      <div *ngIf="f['correo'].touched && f['correo'].invalid" class="error">
+        <div *ngIf="f['correo'].errors?.['required']">El correo es obligatorio.</div>
+        <div *ngIf="f['correo'].errors?.['email']">Formato de correo inválido.</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Teléfono</label>
+      <input type="text" formControlName="telefono" placeholder="10 dígitos">
+      <div *ngIf="f['telefono'].touched && f['telefono'].invalid" class="error">
+        <div *ngIf="f['telefono'].errors?.['required']">El teléfono es obligatorio.</div>
+        <div *ngIf="f['telefono'].errors?.['pattern']">Debe tener 10 dígitos.</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Contraseña</label>
+      <input type="password" formControlName="contrasena" placeholder="Mínimo 6 caracteres">
+      <div *ngIf="f['contrasena'].touched && f['contrasena'].invalid" class="error">
+        <div *ngIf="f['contrasena'].errors?.['required']">La contraseña es obligatoria.</div>
+        <div *ngIf="f['contrasena'].errors?.['minlength']">Mínimo 6 caracteres.</div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-primary">Guardar</button>
+    </div>
+
+    <div *ngIf="successMsg" class="success-msg">{{ successMsg }}</div>
+  </form>
+</div>

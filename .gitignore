@@ -1,0 +1,22 @@
+# Ignorar dependencias de Node (frontend y backend)
+node_modules/
+**/node_modules/
+
+# Builds de Angular u otros
+dist/
+**/dist/
+.angular/
+
+# Archivos de logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistemas operativos
+.DS_Store
+Thumbs.db
+
+# Variables de entorno (por si las usas)
+.env
+.env.local
+.env.*.local

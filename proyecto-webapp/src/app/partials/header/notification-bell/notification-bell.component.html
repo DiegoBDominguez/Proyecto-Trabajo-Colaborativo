@@ -1,0 +1,61 @@
+<div class="notification-bell-wrapper">
+  <!-- Campana (botón) -->
+  <button class="bell-button" (click)="toggleDropdown()" [class.has-unread]="unreadCount > 0">
+    <i class="fas fa-bell"></i>
+    <span *ngIf="unreadCount > 0" class="unread-badge">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+  </button>
+
+  <!-- Dropdown de notificaciones -->
+  <div class="notification-dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
+    <!-- Header del dropdown -->
+    <div class="dropdown-header">
+      <h3>Notificaciones</h3>
+      <div class="header-actions">
+        <button *ngIf="unreadCount > 0" class="mark-all-read" (click)="markAllAsRead()" title="Marcar todas como leídas">
+          <i class="fas fa-check-double"></i>
+        </button>
+        <button *ngIf="notifications.length > 0" class="clear-all" (click)="clearAll()" title="Limpiar todas">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de notificaciones -->
+    <div class="notifications-list">
+      <div *ngIf="notifications.length === 0" class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>No tienes notificaciones</p>
+      </div>
+
+      <div
+        *ngFor="let notif of notifications"
+        class="notification-item"
+        [class.unread]="!notif.leida"
+        (click)="markAsRead(notif)"
+      >
+        <!-- Indicador de no leída (puntito a la izquierda) -->
+        <div *ngIf="!notif.leida" class="unread-indicator"></div>
+
+        <!-- Icono de notificación -->
+        <div class="notif-icon" [style.background-color]="getNotificationTypeColor(notif.type)">
+          <i [ngClass]="'fas ' + notif.icon"></i>
+        </div>
+
+        <!-- Contenido -->
+        <div class="notif-content">
+          <div class="notif-titulo">{{ notif.titulo }}</div>
+          <div class="notif-mensaje">{{ notif.mensaje }}</div>
+          <div class="notif-time">{{ formatDate(notif.fecha) }}</div>
+        </div>
+
+        <!-- Botón eliminar -->
+        <button class="delete-btn" (click)="deleteNotification(notif.id, $event)" title="Eliminar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cierra dropdown cuando clickeas fuera -->
+<div class="overlay" *ngIf="showDropdown" (click)="closeDropdown()"></div>

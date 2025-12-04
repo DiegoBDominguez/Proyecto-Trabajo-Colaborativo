@@ -1,0 +1,213 @@
+$main-color: #5a67d8;
+$main-color-2: #7c8ff0;
+$border-color: #e2e8f0;
+$text-dark: #2d3748;
+$text-light: #718096;
+$success-color: #0a7a18;
+$error-color: #c62828;
+$warning-color: #f57c00;
+
+.historial-wrapper {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.historial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid $main-color;
+
+  h2 {
+    color: $main-color;
+    font-weight: 600;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    i {
+      font-size: 1.4rem;
+    }
+  }
+
+  .ticket-count {
+    color: $text-light;
+    font-size: 14px;
+  }
+}
+
+.historial-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  thead {
+    background: linear-gradient(90deg, #f0eaff, #e8e0ff);
+    th {
+      text-align: left;
+      padding: 12px 14px;
+      font-weight: 700;
+      color: $text-dark;
+      border-bottom: 2px solid $border-color;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #f0f0f0;
+      transition: 0.2s;
+
+      &:hover {
+        background: #faf8ff;
+      }
+
+      td {
+        padding: 12px 14px;
+        vertical-align: middle;
+        color: $text-light;
+
+        &.desc {
+          max-width: 350px;
+          white-space: normal;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          .title {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: $text-dark;
+          }
+
+          .small-desc {
+            color: $text-light;
+            font-size: 13px;
+            max-height: 40px;
+            overflow: hidden;
+          }
+        }
+
+        .btn-primary {
+          background: linear-gradient(135deg, $main-color, $main-color-2);
+          color: #fff;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(90, 103, 216, 0.3);
+          }
+        }
+        .email-link {
+          color: $main-color;
+          font-weight: 600;
+          text-decoration: none;
+          word-break: break-all;
+        }
+        .email-link:hover { text-decoration: underline; }
+        .email-text {
+          color: $text-dark;
+          font-weight: 600;
+          word-break: break-all;
+        }
+      }
+    }
+  }
+}
+
+.empty-state {
+  padding: 48px 24px;
+  text-align: center;
+  color: $text-light;
+
+  i {
+    font-size: 48px;
+    color: #ddd;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+.loading-state {
+  padding: 24px;
+  text-align: center;
+  color: $text-light;
+}
+
+/* Badges para estados */
+.estado-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.estado-cerrado {
+  background: #6c757d;
+}
+
+.estado-respondido {
+  background: #17a2b8;
+}
+
+.estado-en-proceso {
+  background: #fd7e14;
+}
+
+/* Priority badges */
+.priority-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.priority-high {
+  background: rgba($error-color, 0.15);
+  color: $error-color;
+}
+
+.priority-medium {
+  background: rgba($warning-color, 0.15);
+  color: $warning-color;
+}
+
+.priority-low {
+  background: rgba($success-color, 0.15);
+  color: $success-color;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

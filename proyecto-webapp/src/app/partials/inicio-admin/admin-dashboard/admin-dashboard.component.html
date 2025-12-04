@@ -1,0 +1,35 @@
+<div class="admin-dashboard">
+  <div class="top-row">
+    <app-stats-cards></app-stats-cards>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-col">
+      <app-chart-line></app-chart-line>
+    </div>
+    <div class="chart-col">
+      <app-chart-pie></app-chart-pie>
+    </div>
+  </div>
+
+  <div class="graficos-row">
+    <h3>Gráficos</h3>
+    <div class="graficos-grid">
+      <div class="grafico-item">
+        <app-chart-users-pie></app-chart-users-pie>
+      </div>
+      <div class="grafico-item">
+        <app-chart-users-svg-pie></app-chart-users-svg-pie>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="chart-wide">
+      <app-chart-bar></app-chart-bar>
+    </div>
+    <div class="side-table">
+      <app-tickets-by-category></app-tickets-by-category>
+    </div>
+  </div>
+</div>

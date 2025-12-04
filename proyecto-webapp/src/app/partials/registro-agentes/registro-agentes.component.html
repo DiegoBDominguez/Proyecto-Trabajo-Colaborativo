@@ -1,0 +1,91 @@
+<div class="registro-wrapper">
+  <!-- Panel izquierdo -->
+  <div class="registro-info">
+    <div class="icono-usuario">
+      <mat-icon>supervisor_account</mat-icon>
+    </div>
+    <h2>Registro Agente</h2>
+    <p>Registro para agentes de soporte que atenderán solicitudes de los usuarios.</p>
+
+    <ul class="beneficios">
+      <li><mat-icon>support_agent</mat-icon> Atención de tickets</li>
+      <li><mat-icon>forum</mat-icon> Chat en tiempo real con usuarios</li>
+      <li><mat-icon>dashboard</mat-icon> Panel de control</li>
+      <li><mat-icon>update</mat-icon> Notificaciones en tiempo real</li>
+    </ul>
+  </div>
+
+  <!-- Panel derecho -->
+  <div class="registro-form">
+    <h2>Registro de Agente</h2>
+    <p>Completa los datos para acceder al sistema como agente</p>
+
+    <form (ngSubmit)="registrar()">
+      <!-- ID de Agente -->
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>ID de Agente</mat-label>
+        <input matInput [(ngModel)]="agente.clave_usuario" name="clave_usuario" placeholder="Escribe tu ID de agente" (keydown)="soloNumeros($event)">
+      </mat-form-field>
+      <div *ngIf="errors.clave_usuario" class="invalid-feedback">{{ errors.clave_usuario }}</div>
+
+      <!-- Nombre y Apellidos -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Nombre</mat-label>
+          <input matInput [(ngModel)]="agente.first_name" name="first_name" placeholder="Escribe nombre" (keypress)="soloLetras($event)">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Apellidos</mat-label>
+          <input matInput [(ngModel)]="agente.last_name" name="last_name" placeholder="Escribe apellidos" (keypress)="soloLetras($event)">
+        </mat-form-field>
+      </div>
+
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="mat-input">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput [(ngModel)]="agente.email" name="email" placeholder="correo@ejemplo.com" [disabled]="editar">
+      </mat-form-field>
+
+      <!-- Contraseña y Confirmar contraseña -->
+      <div class="form-row" *ngIf="!editar">
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Contraseña</mat-label>
+          <input matInput [(ngModel)]="agente.password" name="password" type="{{ inputType_1 }}" placeholder="Escribe contraseña">
+          <mat-icon matSuffix (click)="showPassword()">{{hide_1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Confirmar contraseña</mat-label>
+          <input matInput [(ngModel)]="agente.confirmar_password" name="confirmar_password" type="{{ inputType_2 }}" placeholder="Confirma contraseña">
+          <mat-icon matSuffix (click)="showPwdConfirmar()">{{hide_2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Teléfono, Especialidad, Experiencia -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Teléfono</mat-label>
+          <input matInput [(ngModel)]="agente.telefono" name="telefono" mask="(000) 000-0000" placeholder="Escribe teléfono" (keydown)="soloNumeros($event)" pattern="[0-9]*" maxlength="10">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Especialidad</mat-label>
+          <input matInput [(ngModel)]="agente.especialidad" name="especialidad" placeholder="Área de especialidad" (keypress)="soloLetras($event)">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-input">
+          <mat-label>Experiencia (años)</mat-label>
+          <input matInput [(ngModel)]="agente.experiencia" name="experiencia" mask="00" placeholder="Años de experiencia">
+        </mat-form-field>
+      </div>
+
+      <!-- Botones -->
+      <div class="acciones">
+        <button type="button" class="btn-cancelar" (click)="regresar()">Cancelar</button>
+        <button *ngIf="!editar" class="btn-registrar" type="submit">Registrar</button>
+        <button *ngIf="editar" class="btn-registrar" type="submit" (click)="actualizar()">Actualizar</button>
+      </div>
+    </form>
+  </div>
+</div>

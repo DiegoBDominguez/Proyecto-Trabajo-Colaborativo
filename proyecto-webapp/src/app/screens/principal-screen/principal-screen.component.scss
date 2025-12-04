@@ -1,0 +1,61 @@
+/* Landing styles - modern hero */
+:host {
+  display: block;
+}
+
+.landing-wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(90deg, #6a11cb, #a833ff);
+  color: white;
+  box-shadow: 0 6px 18px rgba(16, 11, 53, 0.12);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.logo i { font-size: 1.3rem }
+
+.nav-buttons { display:flex; gap:0.6rem }
+
+.btn { border-radius: 8px; padding: 0.5rem 0.9rem; font-weight:600; cursor:pointer; border: none }
+.btn-login { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.16) }
+.btn-register { background: rgba(255,255,255,0.12); color: #fff }
+
+.content { flex:1; display:flex; align-items:center; justify-content:center; padding:2rem; background: radial-gradient(circle at 10% 10%, rgba(168,115,255,0.12), transparent 10%), linear-gradient(135deg,#f6f3ff,#efe7ff)}
+
+.hero { position:relative; width:100%; max-width:1100px; display:flex; gap:2rem; align-items:center; justify-content:center; padding:2rem }
+
+.hero-card { background: rgba(255,255,255,0.9); backdrop-filter: blur(6px); padding:2.4rem; border-radius:16px; box-shadow: 0 12px 30px rgba(22,11,60,0.12); max-width:640px; text-align:center }
+.hero-title { font-size:2rem; font-weight:800; color:#2b2b48; margin-bottom:0.6rem }
+.hero-desc { color:#51546a; margin-bottom:1.4rem }
+
+.hero-actions { display:flex; gap:1rem; justify-content:center; margin-bottom:1rem }
+.btn-primary { background: linear-gradient(90deg,#6a11cb,#9b4dff); color:white; padding:0.9rem 1.6rem; border-radius:10px; box-shadow:0 8px 18px rgba(106,17,203,0.18) }
+.btn-secondary { background: transparent; border:1px solid #cfc6ff; color:#6b4ecb; padding:0.8rem 1.4rem; border-radius:10px }
+
+.hint { color:#7a6f9a; font-size:0.95rem }
+.countdown { font-weight:700; color:#6a11cb }
+
+.hero-decor { position:absolute; right:-40px; top:30px; width:280px; height:280px; border-radius:20px; background:linear-gradient(135deg,#ffd6e8,#dbe8ff); transform: rotate(15deg); filter: blur(18px); opacity:0.5 }
+
+.footer { text-align:center; padding:1rem; color:#6b4ecb; font-weight:600 }
+
+@media (max-width: 768px) {
+  .hero { flex-direction:column; padding:1rem }
+  .hero-decor { display:none }
+  .hero-card { padding:1.4rem }
+  .hero-title { font-size:1.5rem }
+}

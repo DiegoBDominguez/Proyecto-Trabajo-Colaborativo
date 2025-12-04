@@ -1,0 +1,128 @@
+<div class="form-wrapper">
+  <div class="form-header">
+    <i class="fas fa-ticket-alt header-icon"></i>
+    <h2>Crear Nuevo Ticket</h2>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form-container">
+    <div class="form-section">
+      <div class="form-row">
+        <label for="titulo">
+          <i class="fas fa-heading icon"></i> Título
+        </label>
+        <input id="titulo" type="text" formControlName="titulo" placeholder="Título breve" class="input-field input-modern" />
+        <div *ngIf="f['titulo'].touched && f['titulo'].invalid" class="error">
+          <div *ngIf="f['titulo'].errors?.['required']">El título es obligatorio.</div>
+          <div *ngIf="f['titulo'].errors?.['minlength']">Mínimo 3 caracteres.</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-row">
+        <label for="descripcion">
+          <i class="fas fa-pencil-alt icon"></i> Descripción
+        </label>
+        <textarea
+          id="descripcion"
+          formControlName="descripcion"
+          rows="6"
+          placeholder="Describe tu problema en detalle..."
+          class="input-field textarea-modern"
+        ></textarea>
+        <div *ngIf="f['descripcion'].touched && f['descripcion'].invalid" class="error">
+          <div *ngIf="f['descripcion'].errors?.['required']">La descripción es obligatoria.</div>
+          <div *ngIf="f['descripcion'].errors?.['minlength']">Mínimo 5 caracteres.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section form-grid">
+      <div class="form-col">
+        <label for="categoria">
+          <i class="fas fa-tags icon"></i> Categoría
+        </label>
+        <div class="select-wrapper">
+          <select
+            id="categoria"
+            formControlName="categoria"
+            class="input-field select-modern custom-select"
+          >
+            <option value="" disabled selected>Selecciona una categoría</option>
+            <option value="Software">Software - Problemas de aplicaciones</option>
+            <option value="Hardware">Hardware - Fallos de equipo</option>
+            <option value="Red">Red - Conexión y configuración</option>
+            <option value="Soporte General">Soporte General - Asistencia diversa</option>
+          </select>
+        </div>
+        <div *ngIf="f['categoria'].touched && f['categoria'].invalid" class="error">
+          La categoría es obligatoria.
+        </div>
+      </div>
+
+      <div class="form-col">
+        <label for="prioridad">
+          <i class="fas fa-exclamation-triangle icon"></i> Prioridad
+        </label>
+        <div class="select-wrapper">
+          <select
+            id="prioridad"
+            formControlName="prioridad"
+            class="input-field select-modern custom-select"
+          >
+            <option value="" disabled selected>Elige una prioridad</option>
+            <option value="Baja">Baja - Sin impacto urgente</option>
+            <option value="Media">Media - Atención necesaria</option>
+            <option value="Alta">Alta - Resolución inmediata</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-row">
+        <label for="responsable">
+          <i class="fas fa-user icon"></i> Responsable
+        </label>
+        <input
+          id="responsable"
+          type="text"
+          formControlName="responsable"
+          placeholder="Nombre del responsable (ej. Juan Pérez)"
+          class="input-field input-modern"
+        />
+        <!-- Responsable es asignado automáticamente por el sistema; no editable -->
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-row">
+        <label for="archivo">
+          <i class="fas fa-paperclip icon"></i> Archivo adjunto (opcional)
+        </label>
+        <input
+          id="archivo"
+          type="file"
+          (change)="onFileChange($event)"
+          accept="image/*,application/pdf"
+          class="input-file file-modern"
+        />
+        <div *ngIf="fileName" class="file-info">Archivo adjunto: {{ fileName }}</div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancelar()">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="submitting"
+      >
+        <i class="fas fa-check"></i> Crear Ticket
+      </button>
+    </div>
+
+    <div *ngIf="successMsg" class="success-msg" role="alert">{{ successMsg }}</div>
+  </form>
+</div>

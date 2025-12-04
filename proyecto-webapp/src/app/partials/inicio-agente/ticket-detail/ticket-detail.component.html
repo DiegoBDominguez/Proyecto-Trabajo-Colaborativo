@@ -1,0 +1,212 @@
+<!-- src/app/partials/inicio-agente/ticket-detail/ticket-detail.component.html -->
+<div class="ticket-container" *ngIf="ticket as tk">
+  <div class="ticket-card">
+    <!-- Encabezado -->
+    <div class="ticket-header">
+      <div class="ticket-id">
+        <i class="fas fa-ticket-alt"></i>
+        <span class="ticket-number">Ticket #{{ tk.id }}</span>
+      </div>
+
+      <!-- Estado (píldora + edición en línea) -->
+      <div class="estado-wrapper">
+        <!-- Vista normal -->
+        <div class="estado-pill" [ngClass]="estadoClass(tk.estado)" *ngIf="!editEstado">
+          <span class="dot"></span>
+          <span class="text">{{ tk.estado }}</span>
+          <button class="estado-edit-btn" (click)="toggleEditEstado()" title="Editar estado">
+            <i class="fas fa-pen"></i>
+          </button>
+        </div>
+
+        <!-- Modo edición -->
+        <div class="estado-edit" *ngIf="editEstado">
+          <div class="estado-select">
+            <span class="dot" [ngClass]="estadoClass(selectedEstado)"></span>
+            <select [(ngModel)]="selectedEstado">
+              <option *ngFor="let e of estadosPosibles" [ngValue]="e">{{ e }}</option>
+            </select>
+          </div>
+
+          <button class="btn-primary small" (click)="saveEstado()" [disabled]="saving">
+            <i class="fas fa-save"></i>
+            {{ saving ? 'Guardando...' : 'Guardar' }}
+          </button>
+          <button class="btn-secondary small" (click)="toggleEditEstado()">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="ticket-content">
+      <h1 class="ticket-title">{{ tk.descripcion }}</h1>
+
+      <div class="ticket-details">
+        <div class="detail-row">
+          <div class="detail-item">
+            <i class="fas fa-tag"></i>
+            <span class="label">Categoría</span>
+            <span class="value">{{ tk.categoria }}</span>
+          </div>
+
+          <div class="detail-item">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span class="label">Prioridad</span>
+            <span class="value" [ngClass]="getPriorityClass(tk.prioridad)">{{ tk.prioridad }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-item">
+            <i class="fas fa-user"></i>
+              <span class="label">Nombre del reportante</span>
+              <span class="value">{{ getReporterName() }}</span>
+          </div>
+
+          <div class="detail-item">
+            <i class="fas fa-envelope"></i>
+            <span class="label">Email del reportante</span>
+            <span class="value">
+              <a *ngIf="getReporterEmail() && getReporterEmail() !== '—'" [href]="'mailto:' + getReporterEmail()" class="email-link">{{ getReporterEmail() }}</a>
+              <span *ngIf="!getReporterEmail() || getReporterEmail() === '—'">—</span>
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="label">Fecha</span>
+            <span class="value">{{ tk.fecha | date: 'medium' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-item">
+            <i class="fas fa-headset"></i>
+            <span class="label">Responsable (Agente)</span>
+            <span class="value">{{ tk.responsable }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="tk.archivoName">
+          <div class="detail-item">
+            <i class="fas fa-file"></i>
+            <span class="label">Archivo</span>
+            <span class="value">{{ tk.archivoName }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista previa -->
+      <div class="preview-section" *ngIf="tk.archivoDataUrl">
+        <span class="label">Vista previa</span>
+        <div class="preview-wrapper">
+          <img [src]="tk.archivoDataUrl" alt="Vista previa" class="preview-image" />
+        </div>
+      </div>
+
+      <!-- Mensajes/Respuestas del ticket -->
+      <div class="messages-section">
+        <h2 class="section-title">Respuestas y Comentarios</h2>
+        <div class="messages-container">
+          <div *ngIf="mensajes.length === 0" class="no-messages">
+            <p>No hay respuestas aún.</p>
+          </div>
+
+          <div *ngFor="let msg of mensajes" class="mensaje-item" [class.msg-agente]="msg.esAgente" [class.msg-usuario]="!msg.esAgente">
+            <div class="msg-header">
+              <span class="msg-author">{{ msg.usuarioFullName || msg.usuario }}</span>
+              <span class="msg-time">{{ msg.fecha | date: 'medium' }}</span>
+            </div>
+            <div class="msg-body">{{ msg.texto }}</div>
+            <!-- Archivos adjuntos -->
+            <div class="msg-attachments" *ngIf="msg.attachments && msg.attachments.length > 0">
+                <div *ngFor="let attachment of msg.attachments" class="attachment-item">
+                  <div class="att-left">
+                      <div class="att-icon"><i class="fas fa-file"></i></div>
+                  </div>
+
+                  <div class="att-body">
+                    <div class="att-name">
+                      <a class="attachment-link" [href]="attachment.archivo" [download]="attachment.nombre" target="_blank" rel="noopener">{{ attachment.nombre }}</a>
+                    </div>
+                    <div class="att-meta">
+                      <span *ngIf="attachment.tamano">{{ formatBytes(attachment.tamano) }}</span>
+                      <span *ngIf="attachment.fecha_subida"> • {{ attachment.fecha_subida | date:'short' }}</span>
+                    </div>
+                  </div>
+
+                  <div class="att-actions">
+                    <a class="btn-small" [href]="attachment.archivo" target="_blank" rel="noopener">
+                      <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <a class="btn-small" [href]="attachment.archivo" [download]="attachment.nombre">
+                      <i class="fas fa-download"></i>
+                    </a>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input para responder -->
+    <div class="response-form-section" *ngIf="!isClosed(ticket)">
+      <h2 class="section-title">Escribir Respuesta</h2>
+      <textarea
+        [(ngModel)]="response"
+        placeholder="Escribe tu respuesta aquí..."
+        rows="4"
+        class="response-input"
+        [disabled]="enviando"
+      ></textarea>
+
+      <div class="file-attach">
+        <label class="file-label">Adjuntar archivo (Max 10 MB)</label>
+        <input type="file" (change)="onFilesSelected($event)" multiple #fileInput style="display: none;" />
+        <button type="button" class="btn-attach" (click)="fileInput.click()">
+          <i class="fas fa-paperclip"></i> Adjuntar Archivo
+        </button>
+        <div class="selected-files" *ngIf="selectedFiles.length > 0">
+          <div class="file-chip" *ngFor="let f of selectedFiles; let i = index">
+            <span class="file-name">{{ f.name }}</span>
+            <button type="button" class="file-remove" (click)="removeFile(i)" title="Eliminar">✕</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button class="btn-primary" (click)="enviarRespuesta()" [disabled]="(response.trim() === '' && selectedFiles.length === 0) || enviando">
+          <i class="fas fa-paper-plane"></i> {{ enviando ? 'Enviando...' : 'Enviar Respuesta' }}
+        </button>
+        <button class="btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i> Volver
+        </button>
+        <button class="btn-danger" (click)="cerrarTicket()" [disabled]="saving || isClosed(ticket)">
+          <i class="fas fa-ban"></i> {{ saving ? 'Cerrando...' : 'Cerrar Ticket' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Mensaje cuando el ticket está cerrado -->
+    <div class="ticket-closed-section" *ngIf="isClosed(ticket)">
+      <div class="closed-message">
+        <i class="fas fa-check-circle"></i>
+        <h3>Ticket Cerrado Correctamente</h3>
+        <p>Este ticket ha sido cerrado y no se pueden enviar más respuestas.</p>
+        <button class="btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i> Volver al Historial
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Si no hay ticket (cargando o no encontrado) -->
+<div class="ticket-container" *ngIf="!ticket">
+  <div class="ticket-card">
+    <p>Cargando ticket…</p>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="tickets-by-cat">
+  <h4>Tickets por Categoría</h4>
+  <div *ngIf="loading">Cargando…</div>
+  <table *ngIf="!loading">
+    <thead>
+      <tr><th>Categoría</th><th>Cantidad</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of data">
+        <td>{{r.category}}</td>
+        <td>{{r.count}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
